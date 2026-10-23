@@ -1,0 +1,1887 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Book Launch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,700;1,400;1,500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #05060a;
+      --ink: #f4efe4;
+      --muted: rgba(244, 239, 228, .62);
+      --gold-1: #f6dc8f;
+      --gold-2: #c8963e;
+      --gold-3: #9c6b1c;
+      --glass: rgba(14, 17, 30, .58);
+      --line: rgba(243, 214, 138, .22);
+      --serif: "Playfair Display", Georgia, serif;
+      --sans: "Inter", system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html,
+    body {
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--sans)
+    }
+
+    #scene {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      background: #05060a;
+      opacity: 0;
+      /* fades in once the first real frame is drawn — no blank/black pop on start */
+      transition: opacity 1.2s ease
+    }
+
+    #scene.ready {
+      opacity: 1
+    }
+
+    .vignette {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(ellipse at 50% 45%, transparent 68%, rgba(0, 0, 0, .45) 100%)
+    }
+
+    .grain {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .035;
+      /* static: an animated, blended full-screen layer forces a repaint over the WebGL canvas every frame */
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    }
+
+    .countdown.gold-text {
+      animation: none;
+      will-change: transform, opacity
+    }
+
+    @keyframes grain {
+      0% {
+        transform: translate(0, 0)
+      }
+
+      50% {
+        transform: translate(-3%, 2%)
+      }
+
+      100% {
+        transform: translate(2%, -3%)
+      }
+    }
+
+    .gold-text {
+      background: linear-gradient(100deg, var(--gold-3) 0%, var(--gold-1) 30%, var(--gold-2) 55%, var(--gold-1) 80%, var(--gold-3) 100%);
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: sheen 6s linear infinite
+    }
+
+    @keyframes sheen {
+      to {
+        background-position: -200% 0
+      }
+    }
+
+    .eyebrow {
+      font: 500 11px/1 var(--sans);
+      letter-spacing: .38em;
+      text-transform: uppercase;
+      color: var(--gold-1);
+      opacity: .9
+    }
+
+    /* top bar */
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px clamp(16px, 3vw, 36px);
+      z-index: 20;
+      pointer-events: none
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font: 500 11px var(--sans);
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--muted)
+    }
+
+    .brand .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--gold-1);
+      box-shadow: 0 0 12px var(--gold-1);
+      animation: blink 2.4s ease-in-out infinite
+    }
+
+    @keyframes blink {
+      50% {
+        opacity: .35
+      }
+    }
+
+    .icon-btn {
+      pointer-events: auto;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      background: var(--glass);
+      color: var(--ink);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: border-color .3s, transform .3s
+    }
+
+    .icon-btn:hover {
+      border-color: var(--gold-1);
+      transform: scale(1.06)
+    }
+
+    .icon-btn svg {
+      width: 18px;
+      height: 18px
+    }
+
+    /* intro */
+    .intro {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 16px;
+      z-index: 10;
+      pointer-events: none
+    }
+
+    .intro .eyebrow {
+      margin-bottom: 22px
+    }
+
+    .intro h1 {
+      font: 400 clamp(40px, 7.2vw, 104px)/.98 var(--serif);
+      letter-spacing: -.01em
+    }
+
+    .intro h1 em {
+      display: block;
+      font-style: italic;
+      font-weight: 500
+    }
+
+    .intro-sub {
+      margin: 22px auto 44px;
+      max-width: 520px;
+      font: 300 clamp(14px, 1.4vw, 17px)/1.6 var(--sans);
+      color: var(--muted)
+    }
+
+    .launch {
+      pointer-events: auto;
+      position: relative;
+      border: 0;
+      cursor: pointer;
+      padding: 22px 52px;
+      border-radius: 999px;
+      font: 600 13px/1 var(--sans);
+      letter-spacing: .32em;
+      text-transform: uppercase;
+      color: #1b1307;
+      background: linear-gradient(135deg, #fbe7a6, #d7a54a 45%, #f3d68a 70%, #b98330);
+      box-shadow: 0 0 0 1px rgba(255, 236, 180, .5) inset, 0 18px 50px -10px rgba(215, 165, 74, .55), 0 0 80px -10px rgba(243, 214, 138, .45);
+      overflow: hidden;
+      transition: transform .35s cubic-bezier(.2, .8, .2, 1), box-shadow .35s
+    }
+
+    .launch:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 0 0 1px rgba(255, 236, 180, .7) inset, 0 24px 60px -10px rgba(215, 165, 74, .7), 0 0 120px -10px rgba(243, 214, 138, .6)
+    }
+
+    .launch:disabled {
+      filter: saturate(.3) brightness(.7);
+      cursor: wait
+    }
+
+    .launch::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, .75) 50%, transparent 65%);
+      transform: translateX(-120%);
+      animation: sweep 3.2s ease-in-out infinite
+    }
+
+    @keyframes sweep {
+
+      60%,
+      100% {
+        transform: translateX(120%)
+      }
+    }
+
+    .launch-wrap {
+      position: relative;
+      pointer-events: auto
+    }
+
+    .launch-wrap .ring {
+      position: absolute;
+      inset: -2px;
+      border-radius: 999px;
+      border: 1px solid rgba(243, 214, 138, .55);
+      animation: ring 2.6s cubic-bezier(.2, .6, .3, 1) infinite;
+      pointer-events: none
+    }
+
+    .launch-wrap .ring.r2 {
+      animation-delay: 1.3s
+    }
+
+    @keyframes ring {
+      0% {
+        transform: scale(1);
+        opacity: .9
+      }
+
+      100% {
+        transform: scale(1.45, 1.9);
+        opacity: 0
+      }
+    }
+
+    .hint {
+      margin-top: 34px;
+      font: 400 12px var(--sans);
+      color: rgba(244, 239, 228, .4);
+      letter-spacing: .04em
+    }
+
+    kbd {
+      font: 500 11px var(--sans);
+      padding: 2px 7px;
+      border-radius: 5px;
+      border: 1px solid rgba(244, 239, 228, .25)
+    }
+
+    .countdown {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+      z-index: 12;
+      font: 500 clamp(140px, 30vh, 320px)/1 var(--serif);
+      opacity: 0
+    }
+
+    .flash {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 13;
+      opacity: 0;
+      background: radial-gradient(circle at 50% 72%, rgba(255, 248, 232, .9) 0%, rgba(243, 214, 138, .45) 30%, rgba(243, 214, 138, 0) 68%)
+    }
+
+    .caption {
+      position: fixed;
+      left: 0;
+      right: 0;
+      top: clamp(64px, 9vh, 110px);
+      text-align: center;
+      z-index: 9;
+      pointer-events: none;
+      padding: 0 16px;
+      opacity: 0
+    }
+
+    .caption .cap-title {
+      display: block;
+      margin-top: 12px;
+      font: 400 clamp(22px, 2.6vw, 34px)/1.15 var(--serif)
+    }
+
+    .caption .cap-title em {
+      font-style: italic
+    }
+
+    .progress {
+      position: fixed;
+      left: 50%;
+      bottom: clamp(24px, 5vh, 48px);
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 9;
+      opacity: 0;
+      pointer-events: none
+    }
+
+    .progress i {
+      width: 26px;
+      height: 2px;
+      border-radius: 2px;
+      background: rgba(244, 239, 228, .2);
+      overflow: hidden;
+      position: relative
+    }
+
+    .progress i.on::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: var(--gold-1);
+      box-shadow: 0 0 8px var(--gold-1)
+    }
+
+    /* finale */
+    .finale {
+      position: fixed;
+      inset: 0;
+      z-index: 11;
+      pointer-events: none;
+      visibility: hidden
+    }
+
+    .finale.show {
+      visibility: visible
+    }
+
+    /* Finale: book on the left (3D), this panel with a big QR code on the right */
+    .fin-panel {
+      --qr: clamp(200px, min(26vw, 36vh), 380px);
+      position: absolute;
+      right: clamp(16px, 6vw, 110px);
+      top: 50%;
+      transform: translateY(-50%);
+      width: min(460px, 44vw);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: clamp(14px, 2.4vh, 26px);
+      text-align: center
+    }
+
+    .finale-head {
+      opacity: 0
+    }
+
+    .fin-panel .finale-head h2 {
+      font-size: clamp(26px, min(3.2vw, 5.4vh), 46px);
+      white-space: nowrap
+    }
+
+    .finale-head h2 {
+      margin-top: 12px;
+      font: 400 clamp(28px, 4vw, 54px)/1.05 var(--serif)
+    }
+
+    .finale-head h2 em {
+      font-style: italic
+    }
+
+    .finale-head p.by {
+      margin-top: 10px;
+      font: 300 14px var(--sans);
+      color: var(--muted);
+      letter-spacing: .06em
+    }
+
+    .qr-card {
+      opacity: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      padding: 22px 26px 24px;
+      border-radius: 28px;
+      background: var(--glass);
+      border: 1px solid var(--line);
+      backdrop-filter: blur(20px) saturate(1.3);
+      -webkit-backdrop-filter: blur(20px) saturate(1.3);
+      box-shadow: 0 30px 80px -20px rgba(0, 0, 0, .7), 0 0 0 1px rgba(255, 255, 255, .03) inset;
+      pointer-events: auto;
+      width: max-content;
+      max-width: 100%
+    }
+
+    .qr-wrap {
+      position: relative;
+      width: var(--qr);
+      height: var(--qr);
+      flex: none;
+      border-radius: 20px;
+      background: #fff;
+      padding: calc(var(--qr) * .06);
+      box-shadow: 0 0 60px -8px rgba(243, 214, 138, .5)
+    }
+
+    .qr-wrap canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      image-rendering: pixelated
+    }
+
+    .qr-wrap .c {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      border: 2.5px solid var(--gold-1);
+      filter: drop-shadow(0 0 4px rgba(243, 214, 138, .8))
+    }
+
+    .qr-wrap .tl {
+      top: -7px;
+      left: -7px;
+      border-right: 0;
+      border-bottom: 0;
+      border-top-left-radius: 10px
+    }
+
+    .qr-wrap .tr {
+      top: -7px;
+      right: -7px;
+      border-left: 0;
+      border-bottom: 0;
+      border-top-right-radius: 10px
+    }
+
+    .qr-wrap .bl {
+      bottom: -7px;
+      left: -7px;
+      border-right: 0;
+      border-top: 0;
+      border-bottom-left-radius: 10px
+    }
+
+    .qr-wrap .br {
+      bottom: -7px;
+      right: -7px;
+      border-left: 0;
+      border-top: 0;
+      border-bottom-right-radius: 10px
+    }
+
+    .qr-wrap .scan {
+      position: absolute;
+      left: 6px;
+      right: 6px;
+      top: 6px;
+      height: 14%;
+      border-radius: 8px;
+      pointer-events: none;
+      background: linear-gradient(180deg, rgba(243, 214, 138, 0), rgba(243, 214, 138, .55) 85%, rgba(255, 240, 200, .95));
+      mix-blend-mode: multiply;
+      opacity: 0
+    }
+
+    .qr-card.scanning .scan {
+      opacity: 1;
+      animation: scan 2.4s cubic-bezier(.45, 0, .55, 1) infinite
+    }
+
+    /* scan line sweeps the full QR height at any QR size */
+    @keyframes scan {
+      0% {
+        top: 6px
+      }
+
+      50% {
+        top: calc(86% - 6px)
+      }
+
+      100% {
+        top: 6px
+      }
+    }
+
+    .qr-info h3 {
+      margin: 8px 0 6px;
+      font: 400 26px/1.15 var(--serif)
+    }
+
+    .qr-info .url {
+      font: 400 12px var(--sans);
+      color: var(--muted);
+      max-width: min(360px, 40vw);
+      margin: 0 auto;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 16px
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 18px;
+      border-radius: 999px;
+      font: 600 11px var(--sans);
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform .25s, background .25s, border-color .25s
+    }
+
+    .btn svg {
+      width: 14px;
+      height: 14px
+    }
+
+    .btn.primary {
+      color: #1b1307;
+      border: 0;
+      background: linear-gradient(135deg, #fbe7a6, #d7a54a 55%, #f3d68a)
+    }
+
+    .btn.ghost {
+      color: var(--ink);
+      background: transparent;
+      border: 1px solid rgba(244, 239, 228, .25)
+    }
+
+    .btn:hover {
+      transform: translateY(-2px)
+    }
+
+    .btn.ghost:hover {
+      border-color: var(--gold-1)
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translate(-50%, 20px);
+      z-index: 30;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: var(--glass);
+      border: 1px solid var(--line);
+      font: 400 13px var(--sans);
+      backdrop-filter: blur(12px);
+      opacity: 0;
+      transition: .4s;
+      pointer-events: none
+    }
+
+    .toast.on {
+      opacity: 1;
+      transform: translate(-50%, 0)
+    }
+
+    .drop {
+      position: fixed;
+      inset: 14px;
+      border: 1.5px dashed var(--gold-1);
+      border-radius: 24px;
+      z-index: 40;
+      display: grid;
+      place-items: center;
+      background: rgba(5, 6, 10, .7);
+      font: 400 28px var(--serif);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s
+    }
+
+    .drop.on {
+      opacity: 1
+    }
+
+    /* narrow / portrait screens: book on top, panel stacked underneath */
+    @media (max-width:760px) {
+      .fin-panel {
+        --qr: clamp(120px, 34vw, 170px);
+        left: 16px;
+        right: 16px;
+        top: auto;
+        bottom: 16px;
+        transform: none;
+        width: auto;
+        gap: 12px
+      }
+
+      .finale-head h2 {
+        font-size: 26px
+      }
+
+      .qr-card {
+        flex-direction: row;
+        text-align: left;
+        gap: 16px;
+        padding: 14px 16px 14px 14px;
+        border-radius: 22px
+      }
+
+      .qr-info .url {
+        max-width: 42vw;
+        margin: 0
+      }
+
+      .actions {
+        justify-content: flex-start
+      }
+    }
+
+    @media (max-width:600px) {
+      .qr-info h3 {
+        font-size: 19px
+      }
+
+      .actions {
+        flex-direction: column;
+        gap: 8px
+      }
+
+      .btn {
+        justify-content: center;
+        padding: 10px 14px
+      }
+
+      .hint {
+        display: none
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="scene"></canvas>
+  <div class="vignette"></div>
+  <div class="grain"></div>
+
+  <header class="topbar">
+    <div class="brand"><span class="dot"></span><span id="brandText">Official Book Launch</span></div>
+    <button id="muteBtn" class="icon-btn" aria-label="Toggle sound" title="Sound">
+      <svg id="icoOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+        <path d="M4 9v6h4l5 4V5L8 9H4z" />
+        <path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" />
+      </svg>
+      <svg id="icoOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+        style="display:none">
+        <path d="M4 9v6h4l5 4V5L8 9H4z" />
+        <path d="M17 9l5 6M22 9l-5 6" />
+      </svg>
+    </button>
+  </header>
+
+  <section id="intro" class="intro">
+    <p class="eyebrow" id="introEyebrow">Digital Edition · Premiere</p>
+    <h1><span>A New Chapter</span><em class="gold-text">Begins</em></h1>
+    <p class="intro-sub" id="introSub"></p>
+    <div class="launch-wrap">
+      <span class="ring"></span><span class="ring r2"></span>
+      <button id="launchBtn" class="launch" disabled>Preparing…</button>
+    </div>
+    <p class="hint">Press <kbd>Space</kbd> to launch · Drop a PDF anywhere to preview your own pages</p>
+  </section>
+
+  <div id="countdown" class="countdown gold-text"></div>
+  <div id="flash" class="flash"></div>
+  <div id="caption" class="caption"><span class="eyebrow" id="capEyebrow"></span><span class="cap-title"
+      id="capTitle"></span></div>
+  <div id="progress" class="progress"></div>
+
+  <section id="finale" class="finale">
+    <div class="fin-panel" id="finPanel">
+    <div class="finale-head" id="finHead">
+      <p class="eyebrow">Now Available</p>
+      <h2 id="finTitle"></h2>
+      <p class="by" id="finAuthor"></p>
+    </div>
+    <div class="qr-card" id="qrCard">
+      <div class="qr-wrap">
+        <canvas id="qr" width="760" height="760"></canvas>
+        <i class="c tl"></i><i class="c tr"></i><i class="c bl"></i><i class="c br"></i>
+        <span class="scan"></span>
+      </div>
+      <div class="qr-info">
+        <p class="eyebrow">Scan to read</p>
+        <h3>Get your digital copy</h3>
+        <p class="url" id="qrUrl"></p>
+        <div class="actions">
+          <a id="dlBtn" class="btn primary" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 19h14" />
+            </svg>Download</a>
+          <button id="replayBtn" class="btn ghost">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4h4" />
+            </svg>Replay</button>
+        </div>
+      </div>
+    </div>
+    </div>
+  </section>
+
+  <div id="toast" class="toast"></div>
+  <div id="drop" class="drop">Drop your PDF to load its pages</div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+  <script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+} }
+</script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+    /* ==========================================================================
+       CONFIG — edit these for your launch
+       ========================================================================== */
+    const CONFIG = {
+      title: 'STUDENT HANDBOOK',     // use \n for a line break on the cover
+      subtitle: 'Bachelor of Science in Applied Accounting',
+      author: 'SAB Campus of CA Sri Lanka',
+      publisher: 'SAB Campus of CA Sri Lanka',
+      coverTag: 'A Digital Edition',
+      launchDate: 'October 2026',
+      // Path/URL of your PDF. When served over http(s), its pages become the book's pages.
+      // (Opening index.html directly from disk blocks this — drag & drop the PDF instead.)
+      pdfUrl: 'book.pdf',
+      qrUrl: 'https://casrilanka-my.sharepoint.com/:b:/p/salinda_wickramasinghe_sab/IQAVcHsi7RNwRZloecl6FdktAYix-cIAgFEu1QoHqQ4kS28',  // what the QR code opens
+      downloadUrl: '',                              // defaults to pdfUrl, then qrUrl
+      // Captions shown above the book for each open spread (PDF pages 2 · 3–4 · 5–6 · 7–8 · 9–10 · 11–12)
+      spreads: [
+        ['Welcome', 'Student <em>Handbook</em> 2024'],
+        ['Preface & Contents', 'A Word from the <em>Director</em>'],
+        ['Chapter 1', 'The Institute of <em>CA Sri Lanka</em>'],
+        ['Vision & Values', 'Integrity · Excellence · <em>Collaboration</em>'],
+        ['Chapters 2 – 3', 'SAB Campus & the <em>Degree</em>'],
+        ['The Programme', 'Admission & <em>Structure</em>'],
+      ],
+      // Back cover (visible while the book spins in)
+      aboutLabel: 'About this Handbook',
+      backQuote: '“To be a leader in the accounting profession with a global footprint, promoting relevance and excellence.”',
+      blurb: [
+        'This handbook provides all the information on the various aspects of the Bachelor of Science (General/Honours) in Applied Accounting degree programme, and outlines the facilities provided by the SAB Campus, CA Sri Lanka.',
+        'It also provides a comprehensive guide to the by-laws and regulations that every registered student has agreed to abide by.',
+      ],
+      // Fallback pages only (used when the PDF cannot be loaded)
+      chapters: [
+        ['CA Sri Lanka', 5], ['SAB Campus', 8], ['The BSc Degree', 9], ['Programme Structure', 13],
+        ['Evaluation & Examination', 16], ['Continuous Assessments', 19], ['By-Laws', 21], ['Examination Regulations', 29],
+        ['Learning Environment', 33], ['Student Support & Welfare', 35], ['Financial Information', 38], ['Staff', 39],
+      ],
+      reviewsHeading: 'Vision · Mission · Aim',
+      reviews: [
+        ['To be a leader in the accounting profession with a global footprint, promoting relevance and excellence.', 'Vision'],
+        ['Adding value to business and economy by setting standards in financial reporting and auditing.', 'Mission'],
+        ['To produce employable graduates who are technically competent and highly skilled in contemporary accounting practice.', 'Degree Objective'],
+      ],
+    };
+    const titleOneLine = CONFIG.title.replace(/\n/g, ' ');
+
+    /* ==========================================================================
+       DOM
+       ========================================================================== */
+    const $ = (id) => document.getElementById(id);
+    const introEl = $('intro'), launchBtn = $('launchBtn'), countEl = $('countdown'), flashEl = $('flash');
+    const capEl = $('caption'), capEyebrow = $('capEyebrow'), capTitle = $('capTitle'), progressEl = $('progress');
+    const finaleEl = $('finale'), headEl = $('finHead'), cardEl = $('qrCard'), panelEl = $('finPanel');
+    $('introEyebrow').textContent = `Official Launch · ${CONFIG.launchDate}`;
+    $('introSub').innerHTML = `Join us for the launch of the <em style="font-family:var(--serif);color:var(--ink)">${titleOneLine}</em> — ${CONFIG.subtitle}, ${CONFIG.author}.`;
+    $('finTitle').innerHTML = `<em class="gold-text">${titleOneLine}</em>`;
+    $('finAuthor').textContent = `${CONFIG.subtitle} · ${CONFIG.author}`;
+    $('qrUrl').textContent = CONFIG.qrUrl.replace(/^https?:\/\//, '');
+    $('dlBtn').href = CONFIG.downloadUrl || CONFIG.pdfUrl || CONFIG.qrUrl;
+
+    function toast(msg, ms = 2600) {
+      const t = $('toast'); t.textContent = msg; t.classList.add('on');
+      clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('on'), ms);
+    }
+
+    /* ==========================================================================
+       Sound — synthesised with WebAudio, no files needed
+       ========================================================================== */
+    const Sfx = {
+      ctx: null, out: null, muted: false, noiseBuf: null,
+      init() {
+        if (this.ctx) { this.ctx.resume(); return; }
+        const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+        this.ctx = new AC(); this.out = this.ctx.createGain(); this.out.gain.value = this.muted ? 0 : .8;
+        this.out.connect(this.ctx.destination);
+        const len = this.ctx.sampleRate * 2; this.noiseBuf = this.ctx.createBuffer(1, len, this.ctx.sampleRate);
+        const d = this.noiseBuf.getChannelData(0); for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+      },
+      setMuted(m) { this.muted = m; if (this.out) this.out.gain.setTargetAtTime(m ? 0 : .8, this.ctx.currentTime, .05); },
+      env(g, t, a, peak, dur) { g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(peak, t + a); g.gain.exponentialRampToValueAtTime(.0001, t + dur); },
+      noise({ dur = .4, type = 'bandpass', f0 = 1000, f1 = 1000, q = 1, gain = .3, attack = .01 }) {
+        if (!this.ctx) return; const t = this.ctx.currentTime;
+        const s = this.ctx.createBufferSource(); s.buffer = this.noiseBuf; s.loop = true;
+        const f = this.ctx.createBiquadFilter(); f.type = type; f.Q.value = q;
+        f.frequency.setValueAtTime(f0, t); f.frequency.exponentialRampToValueAtTime(f1, t + dur);
+        const g = this.ctx.createGain(); this.env(g, t, attack, gain, dur);
+        s.connect(f).connect(g).connect(this.out); s.start(t, Math.random()); s.stop(t + dur + .05);
+      },
+      tone(freq, dur, gain = .2, type = 'sine', delay = 0, f1) {
+        if (!this.ctx) return; const t = this.ctx.currentTime + delay;
+        const o = this.ctx.createOscillator(); o.type = type; o.frequency.setValueAtTime(freq, t);
+        if (f1) o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+        const g = this.ctx.createGain(); this.env(g, t, .01, gain, dur);
+        o.connect(g).connect(this.out); o.start(t); o.stop(t + dur + .05);
+      },
+      tick(n) { this.tone(n === 1 ? 880 : 660, .5, .18); this.tone(n === 1 ? 1760 : 1320, .3, .05); },
+      boom() { this.tone(110, 1.6, .9, 'sine', 0, 32); this.noise({ dur: 1.4, type: 'lowpass', f0: 900, f1: 80, gain: .6 }); this.noise({ dur: 2.4, f0: 400, f1: 5000, q: .6, gain: .18, attack: .3 }); },
+      whoosh(g = .3) { this.noise({ dur: 1.1, f0: 300, f1: 2400, q: .7, gain: g, attack: .35 }); },
+      flip(g = .35) { this.noise({ dur: .45, f0: 2600, f1: 700, q: .9, gain: g, attack: .06 }); },
+      chime() { [1318.5, 1661.2, 1975.5, 2637].forEach((f, i) => this.tone(f, 1.8, .08, 'sine', i * .09)); },
+    };
+    $('muteBtn').addEventListener('click', () => {
+      Sfx.setMuted(!Sfx.muted);
+      $('icoOn').style.display = Sfx.muted ? 'none' : ''; $('icoOff').style.display = Sfx.muted ? '' : 'none';
+    });
+
+    /* ==========================================================================
+       Renderer / scene
+       ========================================================================== */
+    const canvas = $('scene');
+    // Rendered straight to the screen (no post-processing): native MSAA, low GPU memory, and no
+    // bloom pass that could smear a bad pixel into a full-screen black flash.
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
+    renderer.setSize(innerWidth, innerHeight);
+    // Neutral tone mapping keeps page colours true (ACES greys out white paper and shifts hues)
+    renderer.toneMapping = THREE.NeutralToneMapping;
+    renderer.toneMappingExposure = 1;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    const MAX_ANISO = renderer.capabilities.getMaxAnisotropy();
+
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(0x06070c, 16, 38);
+    const camera = new THREE.PerspectiveCamera(35, innerWidth / innerHeight, .1, 100);
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), .04).texture;
+
+    // If the GPU ever drops the WebGL context, let the browser restore it and re-upload the textures.
+    canvas.addEventListener('webglcontextlost', e => e.preventDefault());
+    canvas.addEventListener('webglcontextrestored', () => scene.traverse(o => {
+      if (!o.material) return;
+      (Array.isArray(o.material) ? o.material : [o.material]).forEach(m =>
+        ['map', 'emissiveMap', 'metalnessMap', 'roughnessMap'].forEach(k => { if (m[k]) m[k].needsUpdate = true; }));
+    }));
+
+    // lights
+    // Lights that hit the front of the book are neutral white; a soft gold light only rims it from behind.
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x1a1418, .45));
+    const key = new THREE.SpotLight(0xffffff, 2.2, 0, Math.PI / 4.5, .9, 0);
+    key.position.set(4, 8, 10); key.castShadow = true;
+    key.shadow.mapSize.set(1024, 1024); key.shadow.bias = -.0004; key.shadow.radius = 6;
+    scene.add(key, key.target);
+    const rim = new THREE.PointLight(0xf3c46a, 1.6, 0, 0); rim.position.set(-6, 3, -5); scene.add(rim);
+    const fill = new THREE.DirectionalLight(0xffffff, .25); fill.position.set(-6, 2, 7); scene.add(fill);
+
+    /* ==========================================================================
+       Canvas helpers
+       ========================================================================== */
+    function mkCanvas(w, h) { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; }
+    function tex(c, srgb = true) {
+      const t = new THREE.CanvasTexture(c); if (srgb) t.colorSpace = THREE.SRGBColorSpace;
+      t.anisotropy = MAX_ANISO; return t;
+    }
+    const FONT = { serif: '"Playfair Display", Georgia, serif', body: '"EB Garamond", Georgia, serif', sans: 'Inter, system-ui, sans-serif' };
+    function spacing(ctx, px) { if ('letterSpacing' in ctx) ctx.letterSpacing = px + 'px'; }
+    function fitFont(ctx, text, maxW, size, weight, family) {
+      do { ctx.font = `${weight} ${size}px ${family}`; size -= 2; } while (ctx.measureText(text).width > maxW && size > 10);
+      return size + 2;
+    }
+    function goldGrad(ctx, x0, y0, x1, y1) {
+      const g = ctx.createLinearGradient(x0, y0, x1, y1);
+      [[0, '#9c6b1c'], [.28, '#f6dc8f'], [.5, '#c39239'], [.72, '#f3d68a'], [1, '#a8741f']].forEach(([o, c]) => g.addColorStop(o, c));
+      return g;
+    }
+    function diamond(ctx, x, y, r) { ctx.beginPath(); ctx.moveTo(x, y - r); ctx.lineTo(x + r, y); ctx.lineTo(x, y + r); ctx.lineTo(x - r, y); ctx.closePath(); ctx.fill(); }
+    function divider(ctx, cx, y, half, col) {
+      ctx.save(); ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(cx - half, y); ctx.lineTo(cx - 18, y); ctx.moveTo(cx + 18, y); ctx.lineTo(cx + half, y); ctx.stroke();
+      diamond(ctx, cx, y, 9); ctx.restore();
+    }
+    function sunburst(ctx, cx, cy, r, gold, base) {
+      ctx.save(); ctx.strokeStyle = gold; ctx.fillStyle = gold;
+      ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
+      ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(cx, cy, r * .86, 0, Math.PI * 2); ctx.stroke();
+      for (let i = 0; i < 72; i++) {
+        const a = i / 72 * Math.PI * 2, l = i % 2 ? .1 : .2;
+        ctx.lineWidth = i % 2 ? 1.5 : 2.5; ctx.beginPath();
+        ctx.moveTo(cx + Math.cos(a) * r * 1.08, cy + Math.sin(a) * r * 1.08);
+        ctx.lineTo(cx + Math.cos(a) * r * (1.08 + l), cy + Math.sin(a) * r * (1.08 + l)); ctx.stroke();
+      }
+      ctx.beginPath();
+      for (let i = 0; i < 16; i++) { const a = i / 16 * Math.PI * 2 - Math.PI / 2, rr = i % 2 ? r * .26 : r * .7; ctx.lineTo(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr); }
+      ctx.closePath(); ctx.fill();
+      ctx.fillStyle = base; ctx.beginPath(); ctx.arc(cx, cy, r * .2, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = gold; ctx.beginPath(); ctx.arc(cx, cy, r * .1, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+    }
+    function makeQR(text) {
+      if (!window.qrcode) return null;
+      const q = qrcode(0, 'M'); q.addData(text); q.make();
+      return { n: q.getModuleCount(), dark: (r, c) => q.isDark(r, c) };
+    }
+
+    /* ==========================================================================
+       Book dimensions
+       ========================================================================== */
+    const W = 3, H = 4.24, LEAVES = 5, GAP = .0045, BLOCK = .3, CT = .05, OVER = .06, SEG = 44, CURL = .85;
+    const CW = 1024, CH = Math.round(1024 * (H + 2 * OVER) / (W + OVER));
+    const PW = 1024, PH = Math.round(1024 * H / W);
+
+    /* ---------- cover ---------- */
+    function drawCover(ctx, w, h, pbr) {
+      const BASE = pbr ? 'rgb(0,175,0)' : '#0e1836';
+      const GOLD = pbr ? 'rgb(0,55,255)' : goldGrad(ctx, 0, 0, w, h);
+      if (pbr) { ctx.fillStyle = BASE; ctx.fillRect(0, 0, w, h); }
+      else {
+        const g = ctx.createLinearGradient(0, 0, w, h);
+        g.addColorStop(0, '#182752'); g.addColorStop(.55, '#0e1836'); g.addColorStop(1, '#070c20');
+        ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+        const rg = ctx.createRadialGradient(w / 2, h * .3, 10, w / 2, h * .3, w * .7);
+        rg.addColorStop(0, 'rgba(243,214,138,.16)'); rg.addColorStop(1, 'rgba(243,214,138,0)');
+        ctx.fillStyle = rg; ctx.fillRect(0, 0, w, h);
+        ctx.globalAlpha = .035; ctx.fillStyle = '#fff';  // linen weave
+        for (let y = 0; y < h; y += 3) ctx.fillRect(0, y, w, 1);
+        for (let x = 0; x < w; x += 3) ctx.fillRect(x, 0, 1, h);
+        ctx.globalAlpha = 1;
+      }
+      ctx.strokeStyle = GOLD; ctx.fillStyle = GOLD;
+      ctx.lineWidth = 4; ctx.strokeRect(46, 46, w - 92, h - 92);
+      ctx.lineWidth = 1.5; ctx.strokeRect(62, 62, w - 124, h - 124);
+      [[62, 62], [w - 62, 62], [62, h - 62], [w - 62, h - 62]].forEach(([x, y]) => diamond(ctx, x, y, 13));
+
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.font = `600 24px ${FONT.sans}`; spacing(ctx, 11);
+      ctx.fillText(CONFIG.coverTag.toUpperCase(), w / 2, 150); spacing(ctx, 0);
+
+      sunburst(ctx, w / 2, h * .32, 118, GOLD, BASE);
+
+      const lines = CONFIG.title.split('\n');
+      let size = 130; lines.forEach(l => { size = Math.min(size, fitFont(ctx, l, w - 210, 130, 700, FONT.serif)); });
+      ctx.font = `700 ${size}px ${FONT.serif}`;
+      const lh = size * 1.08, ty = h * .58 - (lines.length - 1) * lh / 2;
+      lines.forEach((l, i) => ctx.fillText(l, w / 2, ty + i * lh));
+      const after = ty + (lines.length - 1) * lh + size * .75;
+      divider(ctx, w / 2, after + 10, 150, GOLD);
+      fitFont(ctx, CONFIG.subtitle, w - 260, 36, 'italic 400', FONT.serif);
+      ctx.fillText(CONFIG.subtitle, w / 2, after + 70);
+
+      ctx.font = `500 34px ${FONT.sans}`; spacing(ctx, 12);
+      ctx.fillText(CONFIG.author.toUpperCase(), w / 2, h - 165); spacing(ctx, 0);
+    }
+    function drawBack(ctx, w, h) {
+      const g = ctx.createLinearGradient(0, 0, w, h); g.addColorStop(0, '#0b1430'); g.addColorStop(1, '#152450');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+      const GOLD = goldGrad(ctx, 0, 0, w, h);
+      ctx.strokeStyle = GOLD; ctx.lineWidth = 1.5; ctx.strokeRect(62, 62, w - 124, h - 124);
+      ctx.fillStyle = GOLD; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+      ctx.font = `600 22px ${FONT.sans}`; spacing(ctx, 10); ctx.fillText(CONFIG.aboutLabel.toUpperCase(), w / 2, 190); spacing(ctx, 0);
+      ctx.font = `italic 400 46px ${FONT.serif}`;
+      let qy = 290, ql = '';
+      for (const word of CONFIG.backQuote.split(' ')) {
+        if (ql && ctx.measureText(ql + word).width > w - 300) { ctx.fillText(ql.trim(), w / 2, qy); qy += 60; ql = ''; }
+        ql += word + ' ';
+      }
+      ctx.fillText(ql.trim(), w / 2, qy);
+      ctx.fillStyle = '#e9e3d5'; ctx.font = `400 34px ${FONT.body}`; ctx.textAlign = 'left';
+      let y = qy + 110; for (const p of CONFIG.blurb) y = paragraph(ctx, p, 140, y, w - 280, 48, { firstIndent: 0 }) + 26;
+      ctx.fillStyle = GOLD; ctx.textAlign = 'center'; ctx.font = `500 26px ${FONT.sans}`; spacing(ctx, 8);
+      ctx.fillText(CONFIG.publisher.toUpperCase(), w / 2, h - 300); spacing(ctx, 0);
+      ctx.fillStyle = '#f7f2e8'; ctx.fillRect(w - 340, h - 240, 220, 120);
+      ctx.fillStyle = '#111'; let x = w - 325;
+      while (x < w - 135) { const bw = 2 + (Math.random() * 4 | 0); ctx.fillRect(x, h - 228, bw, 84); x += bw + 2 + (Math.random() * 4 | 0); }
+    }
+    function drawSpine(ctx, w, h) {
+      ctx.fillStyle = '#0d1734'; ctx.fillRect(0, 0, w, h);
+      const GOLD = goldGrad(ctx, 0, 0, 0, h);
+      ctx.fillStyle = GOLD; ctx.fillRect(0, 70, w, 4); ctx.fillRect(0, h - 74, w, 4);
+      ctx.save(); ctx.translate(w / 2, h / 2); ctx.rotate(Math.PI / 2);
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.font = `700 ${Math.round(w * .42)}px ${FONT.serif}`; ctx.fillText(titleOneLine, -h * .1, 0);
+      ctx.font = `500 ${Math.round(w * .24)}px ${FONT.sans}`; spacing(ctx, 6);
+      ctx.fillText(CONFIG.author.toUpperCase(), h * .3, 0); spacing(ctx, 0); ctx.restore();
+    }
+    function drawEndpaper(ctx, w, h) {
+      ctx.fillStyle = '#111c3e'; ctx.fillRect(0, 0, w, h);
+      ctx.strokeStyle = 'rgba(243,214,138,.28)'; ctx.lineWidth = 1.5;
+      const s = 64;
+      for (let y = -s; y < h + s; y += s) for (let x = -s; x < w + s; x += s) {
+        const ox = (y / s) % 2 ? s / 2 : 0;
+        ctx.beginPath(); ctx.moveTo(x + ox, y - s / 2); ctx.lineTo(x + ox + s / 2, y); ctx.lineTo(x + ox, y + s / 2); ctx.lineTo(x + ox - s / 2, y); ctx.closePath(); ctx.stroke();
+      }
+      ctx.fillStyle = '#f5efe2'; const bw = 460, bh = 300, bx = (w - bw) / 2, by = h / 2 - bh / 2;
+      ctx.beginPath(); ctx.roundRect(bx, by, bw, bh, 18); ctx.fill();
+      ctx.strokeStyle = '#b48838'; ctx.lineWidth = 2; ctx.beginPath(); ctx.roundRect(bx + 14, by + 14, bw - 28, bh - 28, 10); ctx.stroke();
+      ctx.fillStyle = '#9a7432'; ctx.textAlign = 'center';
+      ctx.font = `italic 500 58px ${FONT.serif}`; ctx.fillText('Ex Libris', w / 2, by + 110);
+      ctx.fillStyle = '#5a4a36'; ctx.font = `400 28px ${FONT.body}`; ctx.fillText('This book belongs to', w / 2, by + 170);
+      ctx.strokeStyle = '#b8a888'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(bx + 70, by + 240); ctx.lineTo(bx + bw - 70, by + 240); ctx.stroke();
+    }
+
+    /* ---------- interior pages ---------- */
+    const FILLER = [
+      'Every book begins long before its first word is written, in the quiet moments when an idea refuses to be ignored.',
+      'What follows is the result of many seasons of listening, learning, and patiently shaping thoughts into something worth sharing.',
+      'The pages ahead are an invitation to slow down, to look again at familiar things, and to find in them something new.',
+      'Some chapters will feel like a conversation with an old friend; others, like a door opening onto a room you never knew existed.',
+      'Along the way you will meet ideas that challenge, encourage, and perhaps change the direction of your own story.',
+      'Read it in one sitting or return to it often — either way, it was written with you in mind.',
+      'Knowledge grows when it is shared, and stories grow richer every time they find a new reader.',
+      'It is in the small details, the margins and the pauses, that the most important lessons are often found.',
+    ];
+    function filler(n, seed) { const out = []; for (let i = 0; i < n; i++) out.push(FILLER[(seed * 3 + i) % FILLER.length]); return out.join(' '); }
+
+    function paragraph(ctx, text, x, y, maxW, lh, { justify = true, firstIndent = 44, dropLines = 0, dropW = 0, maxY = Infinity } = {}) {
+      const words = text.split(/\s+/); let line = [], li = 0;
+      const wFor = i => maxW - (i < dropLines ? dropW : 0) - (i === 0 ? firstIndent : 0);
+      const xFor = i => x + (i < dropLines ? dropW : 0) + (i === 0 ? firstIndent : 0);
+      const flush = (last) => {
+        if (y <= maxY) {
+          const lw = wFor(li), lx = xFor(li);
+          if (justify && !last && line.length > 1) {
+            const ww = line.reduce((s, w) => s + ctx.measureText(w).width, 0), gap = (lw - ww) / (line.length - 1);
+            let cx = lx; for (const w of line) { ctx.fillText(w, cx, y); cx += ctx.measureText(w).width + gap; }
+          } else ctx.fillText(line.join(' '), lx, y);
+        }
+        y += lh; li++; line = [];
+      };
+      for (const w of words) { if (line.length && ctx.measureText([...line, w].join(' ')).width > wFor(li)) flush(false); line.push(w); }
+      if (line.length) flush(true);
+      return y;
+    }
+
+    let noisePattern = null;
+    function paper(ctx, left) {
+      ctx.fillStyle = '#f6f0e3'; ctx.fillRect(0, 0, PW, PH);
+      if (!noisePattern) {
+        const n = mkCanvas(256, 256), nc = n.getContext('2d'), id = nc.createImageData(256, 256);
+        for (let i = 0; i < id.data.length; i += 4) { const v = 120 + Math.random() * 100; id.data[i] = v; id.data[i + 1] = v * .95; id.data[i + 2] = v * .85; id.data[i + 3] = 14; }
+        nc.putImageData(id, 0, 0); noisePattern = ctx.createPattern(n, 'repeat');
+      }
+      ctx.fillStyle = noisePattern; ctx.fillRect(0, 0, PW, PH);
+      const gx = left ? PW : 0, g = ctx.createLinearGradient(gx, 0, left ? PW - 120 : 120, 0);
+      g.addColorStop(0, 'rgba(90,64,30,.22)'); g.addColorStop(1, 'rgba(90,64,30,0)');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, PW, PH);
+      const e = ctx.createLinearGradient(left ? 0 : PW, 0, left ? 40 : PW - 40, 0);
+      e.addColorStop(0, 'rgba(120,90,50,.10)'); e.addColorStop(1, 'rgba(120,90,50,0)');
+      ctx.fillStyle = e; ctx.fillRect(0, 0, PW, PH);
+    }
+    const INK = '#2b2620', ACCENT = '#9a7432', MX = 120;
+    function folio(ctx, n, left) {
+      ctx.fillStyle = '#8a7a64'; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+      ctx.font = `500 18px ${FONT.sans}`; spacing(ctx, 6);
+      ctx.fillText((left ? CONFIG.author : titleOneLine).toUpperCase(), PW / 2, 96); spacing(ctx, 0);
+      ctx.font = `400 26px ${FONT.body}`; ctx.fillText(String(n), PW / 2, PH - 70);
+    }
+    function body(ctx) { ctx.fillStyle = INK; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'; ctx.font = `400 31px ${FONT.body}`; }
+
+    const PAGES = [
+      // 0 · title page (right)
+      (ctx) => {
+        paper(ctx, false); ctx.textAlign = 'center'; ctx.fillStyle = ACCENT;
+        sunburst(ctx, PW / 2, 300, 60, ACCENT, '#f6f0e3');
+        ctx.fillStyle = INK; const lines = CONFIG.title.split('\n');
+        let size = 96; lines.forEach(l => { size = Math.min(size, fitFont(ctx, l, PW - 2 * MX - 40, 96, 700, FONT.serif)); });
+        ctx.font = `700 ${size}px ${FONT.serif}`; lines.forEach((l, i) => ctx.fillText(l, PW / 2, 560 + i * size * 1.1));
+        const y = 560 + (lines.length - 1) * size * 1.1;
+        divider(ctx, PW / 2, y + 80, 120, ACCENT);
+        ctx.fillStyle = '#5c5144'; ctx.font = `italic 400 36px ${FONT.body}`; ctx.fillText(CONFIG.subtitle, PW / 2, y + 160);
+        ctx.fillStyle = INK; ctx.font = `500 30px ${FONT.sans}`; spacing(ctx, 10); ctx.fillText(CONFIG.author.toUpperCase(), PW / 2, y + 330); spacing(ctx, 0);
+        ctx.fillStyle = '#8a7a64'; ctx.font = `400 26px ${FONT.body}`; ctx.fillText(`${CONFIG.publisher} · ${CONFIG.launchDate}`, PW / 2, PH - 150);
+      },
+      // 1 · copyright & dedication (left)
+      (ctx) => {
+        paper(ctx, true); ctx.textAlign = 'center'; ctx.fillStyle = ACCENT;
+        ctx.font = `italic 400 42px ${FONT.body}`; ctx.fillText('For everyone who believes', PW / 2, 470); ctx.fillText('a single page can change a life.', PW / 2, 530);
+        divider(ctx, PW / 2, 610, 70, ACCENT);
+        ctx.fillStyle = '#6a5e4e'; ctx.textAlign = 'left'; ctx.font = `400 22px ${FONT.body}`;
+        [`Copyright © ${new Date().getFullYear()} ${CONFIG.author}`, 'All rights reserved.', '',
+          'No part of this publication may be reproduced, distributed or transmitted in any form',
+          'without the prior written permission of the publisher.', '', `Published by ${CONFIG.publisher}`, 'Digital edition — first release',
+        ].forEach((l, i) => ctx.fillText(l, MX, PH - 420 + i * 34));
+      },
+      // 2 · contents (right)
+      (ctx) => {
+        paper(ctx, false); ctx.textAlign = 'left'; ctx.fillStyle = ACCENT;
+        ctx.font = `600 20px ${FONT.sans}`; spacing(ctx, 8); ctx.fillText('INSIDE', MX, 230); spacing(ctx, 0);
+        ctx.fillStyle = INK; ctx.font = `400 84px ${FONT.serif}`; ctx.fillText('Contents', MX, 330);
+        ctx.fillStyle = ACCENT; ctx.fillRect(MX, 372, 80, 3);
+        CONFIG.chapters.forEach(([name, pg], i) => {
+          const y = 490 + i * Math.min(96, (PH - 600) / CONFIG.chapters.length); ctx.textAlign = 'left';
+          ctx.fillStyle = ACCENT; ctx.font = `italic 400 30px ${FONT.serif}`; ctx.fillText(String(i + 1).padStart(2, '0'), MX, y);
+          ctx.fillStyle = INK; ctx.font = `400 36px ${FONT.body}`; ctx.fillText(name, MX + 70, y);
+          const tw = ctx.measureText(name).width; ctx.textAlign = 'right'; ctx.fillText(String(pg), PW - MX, y);
+          ctx.fillStyle = '#b8a888'; for (let x = MX + 90 + tw; x < PW - MX - 60; x += 14) ctx.fillRect(x, y - 6, 3, 3);
+        });
+      },
+      // 3 · foreword (left)
+      (ctx) => {
+        paper(ctx, true); folio(ctx, 4, true);
+        ctx.textAlign = 'center'; ctx.fillStyle = ACCENT; ctx.font = `600 20px ${FONT.sans}`; spacing(ctx, 8); ctx.fillText('FOREWORD', PW / 2, 250); spacing(ctx, 0);
+        ctx.fillStyle = INK; ctx.font = `italic 400 54px ${FONT.serif}`; ctx.fillText('Before We Begin', PW / 2, 330);
+        body(ctx); let y = 450; for (let i = 0; i < 4; i++) y = paragraph(ctx, filler(3, i), MX, y, PW - 2 * MX, 46, { maxY: PH - 140 }) + 8;
+      },
+      // 4 · chapter one (right)
+      (ctx) => {
+        paper(ctx, false);
+        ctx.textAlign = 'center'; ctx.fillStyle = ACCENT; ctx.font = `600 20px ${FONT.sans}`; spacing(ctx, 8); ctx.fillText('CHAPTER ONE', PW / 2, 260); spacing(ctx, 0);
+        ctx.fillStyle = INK; ctx.font = `400 78px ${FONT.serif}`; ctx.fillText(CONFIG.chapters[1]?.[0] || 'The First Page', PW / 2, 360);
+        divider(ctx, PW / 2, 420, 90, ACCENT);
+        const text = filler(5, 1); ctx.fillStyle = ACCENT; ctx.font = `700 168px ${FONT.serif}`; ctx.textAlign = 'left';
+        ctx.fillText(text[0], MX - 6, 660);
+        body(ctx); let y = paragraph(ctx, text.slice(1), MX, 540, PW - 2 * MX, 46, { firstIndent: 0, dropLines: 3, dropW: 128 }) + 8;
+        for (let i = 0; i < 2; i++) y = paragraph(ctx, filler(3, i + 4), MX, y, PW - 2 * MX, 46, { maxY: PH - 140 }) + 8;
+        folio(ctx, 5, false);
+      },
+      // 5 · text (left)
+      (ctx) => {
+        paper(ctx, true); folio(ctx, 6, true); body(ctx);
+        let y = 200; for (let i = 0; i < 6; i++) y = paragraph(ctx, filler(3, i + 2), MX, y, PW - 2 * MX, 46, { maxY: PH - 140 }) + 8;
+      },
+      // 6 · text with pull quote (right)
+      (ctx) => {
+        paper(ctx, false); folio(ctx, 7, false); body(ctx);
+        let y = 200; for (let i = 0; i < 2; i++) y = paragraph(ctx, filler(3, i + 5), MX, y, PW - 2 * MX, 46) + 8;
+        y += 30; ctx.fillStyle = ACCENT; ctx.fillRect(MX + 60, y, PW - 2 * MX - 120, 2);
+        ctx.textAlign = 'center'; ctx.font = `italic 400 48px ${FONT.serif}`;
+        ctx.fillText('“The most important lessons', PW / 2, y + 90); ctx.fillText('live in the margins.”', PW / 2, y + 152);
+        ctx.fillRect(MX + 60, y + 210, PW - 2 * MX - 120, 2);
+        body(ctx); y += 300; for (let i = 0; i < 3; i++) y = paragraph(ctx, filler(3, i + 1), MX, y, PW - 2 * MX, 46, { maxY: PH - 140 }) + 8;
+      },
+      // 7 · illustration (left)
+      (ctx) => {
+        paper(ctx, true);
+        const x = MX, y = 180, w = PW - 2 * MX, h = PH - 470;
+        const sky = ctx.createLinearGradient(0, y, 0, y + h);
+        sky.addColorStop(0, '#0e1836'); sky.addColorStop(.55, '#2b3a6b'); sky.addColorStop(.85, '#c98f4a'); sky.addColorStop(1, '#f1cf8a');
+        ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
+        ctx.fillStyle = sky; ctx.fillRect(x, y, w, h);
+        ctx.fillStyle = '#fff'; for (let i = 0; i < 90; i++) { ctx.globalAlpha = Math.random() * .8; ctx.fillRect(x + Math.random() * w, y + Math.random() * h * .5, 2, 2); }
+        ctx.globalAlpha = 1;
+        const sx = PW / 2, sy = y + h * .74, sg = ctx.createRadialGradient(sx, sy, 10, sx, sy, 260);
+        sg.addColorStop(0, 'rgba(255,236,180,1)'); sg.addColorStop(.25, 'rgba(255,220,150,.9)'); sg.addColorStop(1, 'rgba(255,200,120,0)');
+        ctx.fillStyle = sg; ctx.fillRect(x, y, w, h);
+        [['#1f2a50', .62, 140], ['#15203f', .72, 110], ['#0b1226', .84, 80]].forEach(([c, base, amp], k) => {
+          ctx.fillStyle = c; ctx.beginPath(); ctx.moveTo(x, y + h);
+          for (let px = 0; px <= w; px += 8) ctx.lineTo(x + px, y + h * base + Math.sin(px * .008 + k * 2) * amp * .5 + Math.sin(px * .021 + k) * amp * .25);
+          ctx.lineTo(x + w, y + h); ctx.fill();
+        });
+        ctx.restore();
+        ctx.strokeStyle = ACCENT; ctx.lineWidth = 2; ctx.strokeRect(x - 14, y - 14, w + 28, h + 28);
+        ctx.fillStyle = '#6a5e4e'; ctx.textAlign = 'center'; ctx.font = `italic 400 30px ${FONT.body}`;
+        ctx.fillText('Fig. 1 — Where every journey begins', PW / 2, y + h + 90);
+        folio(ctx, 8, true);
+      },
+      // 8 · praise / reviews (right)
+      (ctx) => {
+        paper(ctx, false); ctx.textAlign = 'center';
+        ctx.fillStyle = ACCENT; ctx.font = `600 20px ${FONT.sans}`; spacing(ctx, 8); ctx.fillText('REVIEWS', PW / 2, 220); spacing(ctx, 0);
+        ctx.fillStyle = INK; ctx.font = `400 66px ${FONT.serif}`; ctx.fillText(CONFIG.reviewsHeading, PW / 2, 310);
+        let y = 440;
+        CONFIG.reviews.forEach(([q, who]) => {
+          ctx.fillStyle = '#c39239'; ctx.font = `400 40px ${FONT.sans}`; spacing(ctx, 10); ctx.fillText('★★★★★', PW / 2, y); spacing(ctx, 0);
+          ctx.fillStyle = INK; ctx.font = `italic 400 36px ${FONT.body}`;
+          const words = `“${q}”`.split(' '); let line = '', yy = y + 70;
+          for (const w of words) { if (ctx.measureText(line + w).width > PW - 2 * MX - 40) { ctx.fillText(line.trim(), PW / 2, yy); yy += 48; line = ''; } line += w + ' '; }
+          ctx.fillText(line.trim(), PW / 2, yy);
+          ctx.fillStyle = ACCENT; ctx.font = `500 20px ${FONT.sans}`; spacing(ctx, 6); ctx.fillText(`— ${who.toUpperCase()}`, PW / 2, yy + 60); spacing(ctx, 0);
+          y = yy + 170;
+        });
+      },
+      // 9 · thank you (left)
+      (ctx) => {
+        paper(ctx, true); ctx.textAlign = 'center';
+        sunburst(ctx, PW / 2, PH * .36, 90, ACCENT, '#f6f0e3');
+        ctx.fillStyle = INK; ctx.font = `italic 400 64px ${FONT.serif}`; ctx.fillText('Thank you', PW / 2, PH * .36 + 230);
+        ctx.font = `400 34px ${FONT.body}`; ctx.fillStyle = '#5c5144';
+        ctx.fillText('for joining us at the launch.', PW / 2, PH * .36 + 300);
+        ctx.fillText('This was only a glimpse —', PW / 2, PH * .36 + 350);
+        ctx.fillText('the full story is waiting for you.', PW / 2, PH * .36 + 400);
+      },
+      // 10 · continue reading + QR (right, sits on the page block)
+      (ctx) => {
+        paper(ctx, false); ctx.textAlign = 'center';
+        ctx.fillStyle = ACCENT; ctx.font = `600 20px ${FONT.sans}`; spacing(ctx, 8); ctx.fillText('CONTINUE READING', PW / 2, 300); spacing(ctx, 0);
+        ctx.fillStyle = INK; ctx.font = `400 70px ${FONT.serif}`; ctx.fillText('The story continues…', PW / 2, 400);
+        ctx.font = `400 32px ${FONT.body}`; ctx.fillStyle = '#5c5144';
+        ctx.fillText('Scan the code to download the', PW / 2, 480); ctx.fillText('complete digital edition.', PW / 2, 524);
+        const q = makeQR(CONFIG.qrUrl);
+        if (q) {
+          const size = 360, m = size / q.n, ox = (PW - size) / 2, oy = 620;
+          ctx.fillStyle = '#fff'; ctx.fillRect(ox - 30, oy - 30, size + 60, size + 60);
+          ctx.strokeStyle = ACCENT; ctx.lineWidth = 2; ctx.strokeRect(ox - 44, oy - 44, size + 88, size + 88);
+          ctx.fillStyle = '#121a33';
+          for (let r = 0; r < q.n; r++) for (let c = 0; c < q.n; c++) if (q.dark(r, c)) ctx.fillRect(ox + c * m, oy + r * m, m + .5, m + .5);
+        }
+      },
+    ];
+
+    /* ---------- page-edge textures ---------- */
+    function edgeTex(horizontal) {
+      const c = mkCanvas(horizontal ? 512 : 64, horizontal ? 64 : 512), ctx = c.getContext('2d');
+      ctx.fillStyle = '#ede4d1'; ctx.fillRect(0, 0, c.width, c.height);
+      const n = horizontal ? c.height : c.width;
+      for (let i = 0; i < n; i++) {
+        ctx.fillStyle = `rgba(${120 + Math.random() * 40},${100 + Math.random() * 30},70,${Math.random() * .18})`;
+        horizontal ? ctx.fillRect(0, i, c.width, 1) : ctx.fillRect(i, 0, 1, c.height);
+      }
+      return tex(c);
+    }
+
+    /* ==========================================================================
+       Build the book
+       ========================================================================== */
+    const bookRoot = new THREE.Group();     // launch flight / final pose
+    const floatGroup = new THREE.Group();   // idle float
+    const bookGroup = new THREE.Group();    // open/closed centring
+    bookRoot.add(floatGroup); floatGroup.add(bookGroup); scene.add(bookRoot);
+    bookRoot.visible = false; bookRoot.position.y = -7.5;
+    bookGroup.position.z = BLOCK / 2;
+
+    const book = { coverCanvas: null, coverPbr: null, coverMat: null, sides: [], leaves: [], coverPivot: null };
+
+    // Pages show their own colours (emissive) and take only a little shading from the lights,
+    // so they read clearly under any stage lighting while the curl still has depth.
+    function pageMaterial(t, side) {
+      return new THREE.MeshStandardMaterial({
+        map: t, color: 0x4d4d4d, emissive: 0xffffff, emissiveMap: t, emissiveIntensity: .78,
+        roughness: 1, metalness: 0, envMapIntensity: .1, side,
+      });
+    }
+
+    function buildBook() {
+      const navy = new THREE.MeshStandardMaterial({ color: 0x0d1734, roughness: .55, metalness: .1 });
+
+      // cover art
+      const cc = mkCanvas(CW, CH), pc = mkCanvas(CW, CH);
+      drawCover(cc.getContext('2d'), CW, CH, false); drawCover(pc.getContext('2d'), CW, CH, true);
+      const coverMap = tex(cc), pbrMap = tex(pc, false);
+      const coverMat = new THREE.MeshPhysicalMaterial({
+        map: coverMap, metalnessMap: pbrMap, roughnessMap: pbrMap, metalness: 1, roughness: 1,
+        clearcoat: .15, clearcoatRoughness: .5, envMapIntensity: 1.2,
+        emissive: 0xffffff, emissiveMap: coverMap, emissiveIntensity: .25,
+      });
+      book.coverCanvas = cc; book.coverPbr = pc; book.coverMat = coverMat;
+      const endC = mkCanvas(CW, CH); drawEndpaper(endC.getContext('2d'), CW, CH);
+      const endMat = new THREE.MeshStandardMaterial({ map: tex(endC), roughness: .7 });
+      const backC = mkCanvas(CW, CH); drawBack(backC.getContext('2d'), CW, CH);
+      const backMat = new THREE.MeshPhysicalMaterial({ map: tex(backC), roughness: .45, metalness: .15, clearcoat: .3, envMapIntensity: 1.2 });
+
+      const coverGeo = new THREE.BoxGeometry(W + OVER, H + 2 * OVER, CT);
+
+      // back cover
+      const back = new THREE.Mesh(coverGeo, [navy, navy, navy, navy, endMat, backMat]);
+      back.position.set((W + OVER) / 2, 0, -BLOCK - CT / 2); back.castShadow = true; bookGroup.add(back);
+
+      // page block
+      const eV = edgeTex(false), eH = edgeTex(true);
+      const sideV = new THREE.MeshStandardMaterial({ map: eV, roughness: .9 }), sideH = new THREE.MeshStandardMaterial({ map: eH, roughness: .9 });
+      const blockC = mkCanvas(PW, PH); PAGES[10](blockC.getContext('2d'));
+      const blockTop = pageMaterial(tex(blockC), THREE.FrontSide);
+      book.sides[10] = { canvas: blockC, mat: blockTop };
+      const block = new THREE.Mesh(new THREE.BoxGeometry(W - .01, H, BLOCK), [sideV, sideV, sideH, sideH, blockTop, sideV]);
+      block.position.set(W / 2, 0, -BLOCK / 2); block.castShadow = true; bookGroup.add(block);
+
+      // spine
+      const zTop = (LEAVES + 1) * GAP + CT, zBot = -BLOCK - CT;
+      const sc = mkCanvas(160, 2048); drawSpine(sc.getContext('2d'), 160, 2048);
+      const spineMat = new THREE.MeshPhysicalMaterial({ map: tex(sc), roughness: .45, metalness: .3, clearcoat: .3 });
+      const spine = new THREE.Mesh(new THREE.BoxGeometry(CT, H + 2 * OVER, zTop - zBot), [navy, spineMat, navy, navy, navy, navy]);
+      spine.position.set(-CT / 2, 0, (zTop + zBot) / 2); spine.castShadow = true; bookGroup.add(spine);
+
+      // leaves (bendable)
+      for (let i = 0; i < LEAVES; i++) {
+        const geo = new THREE.PlaneGeometry(W, H, SEG, 1);
+        const mk = (idx, left) => {
+          const c = mkCanvas(PW, PH); PAGES[idx](c.getContext('2d'));
+          const t = tex(c);
+          if (left) { t.wrapS = THREE.RepeatWrapping; t.repeat.x = -1; t.offset.x = 1; }
+          const m = pageMaterial(t, left ? THREE.BackSide : THREE.FrontSide);
+          book.sides[idx] = { canvas: c, mat: m };
+          return m;
+        };
+        const front = new THREE.Mesh(geo, mk(i * 2, false)), backM = new THREE.Mesh(geo, mk(i * 2 + 1, true));
+        front.castShadow = true;
+        const leaf = { geo, p: 0, last: -1, dir: 1, zR: (LEAVES - i) * GAP, zL: (i + 1) * GAP };
+        bookGroup.add(front, backM); book.leaves.push(leaf); bendLeaf(leaf);
+      }
+
+      // front cover on a hinge
+      const pivot = new THREE.Group();
+      const front = new THREE.Mesh(coverGeo, [navy, navy, navy, navy, coverMat, endMat]);
+      front.position.x = (W + OVER) / 2; front.castShadow = true;
+      pivot.add(front); bookGroup.add(pivot); book.coverPivot = pivot;
+
+      bookRoot.traverse(o => { if (o.isMesh) o.receiveShadow = false; });
+    }
+
+    const xs = new Float32Array(SEG + 1), zs = new Float32Array(SEG + 1);
+    function bendLeaf(leaf) {
+      const p = leaf.p;
+      if (p === leaf.last) return;
+      if (p > leaf.last) leaf.dir = 1; else if (p < leaf.last) leaf.dir = -1;
+      leaf.last = p;
+      const th0 = p * Math.PI, k = Math.sin(p * Math.PI) * CURL * leaf.dir, ds = W / SEG;
+      let x = 0, z = 0; xs[0] = 0; zs[0] = 0;
+      for (let c = 1; c <= SEG; c++) {
+        const u = (c - .5) / SEG, th = th0 - k * u;   // free edge lags behind the spine → natural curl
+        x += ds * Math.cos(th); z += ds * Math.sin(th); xs[c] = x; zs[c] = z;
+      }
+      const s = p * p * (3 - 2 * p), zOff = leaf.zR + (leaf.zL - leaf.zR) * s;
+      const pos = leaf.geo.attributes.position;
+      for (let row = 0; row < 2; row++) for (let c = 0; c <= SEG; c++)
+        pos.setXYZ(row * (SEG + 1) + c, xs[c], row === 0 ? H / 2 : -H / 2, zs[c] + zOff);
+      pos.needsUpdate = true; leaf.geo.computeVertexNormals(); leaf.geo.computeBoundingSphere();
+    }
+
+    /* ==========================================================================
+       Stage: background, floor, portal, beam
+       ========================================================================== */
+    (function background() {
+      const c = mkCanvas(1024, 1024), ctx = c.getContext('2d');
+      const g = ctx.createRadialGradient(512, 430, 20, 512, 512, 760);
+      g.addColorStop(0, '#1c2346'); g.addColorStop(.42, '#0b0f20'); g.addColorStop(1, '#040509');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, 1024, 1024);
+      scene.background = tex(c);
+    })();
+
+    const FLOOR_Y = -3.4;
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), new THREE.MeshStandardMaterial({ color: 0x0a0c13, roughness: .5, metalness: .4 }));
+    floor.rotation.x = -Math.PI / 2; floor.position.y = FLOOR_Y; floor.receiveShadow = true; scene.add(floor);
+
+    function radialTex(stops) {
+      const c = mkCanvas(256, 256), ctx = c.getContext('2d'), g = ctx.createRadialGradient(128, 128, 0, 128, 128, 128);
+      stops.forEach(([o, col]) => g.addColorStop(o, col)); ctx.fillStyle = g; ctx.fillRect(0, 0, 256, 256); return tex(c);
+    }
+    const portal = new THREE.Group(); portal.position.y = FLOOR_Y + .01; scene.add(portal);
+    const portalU = { charge: .15 };
+    const glowMat = new THREE.MeshBasicMaterial({
+      map: radialTex([[0, 'rgba(255,230,170,1)'], [.25, 'rgba(243,190,100,.55)'], [.6, 'rgba(200,140,60,.12)'], [1, 'rgba(0,0,0,0)']]),
+      transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, color: new THREE.Color(1, 1, 1),
+    });
+    const glow = new THREE.Mesh(new THREE.PlaneGeometry(10, 10), glowMat); glow.rotation.x = -Math.PI / 2; portal.add(glow);
+    const ringMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(3, 2.2, 1.1), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false });
+    const ring1 = new THREE.Mesh(new THREE.TorusGeometry(1.6, .022, 12, 160), ringMat); ring1.rotation.x = Math.PI / 2; portal.add(ring1);
+    const ring2Mat = ringMat.clone(); ring2Mat.opacity = .35;
+    const ring2 = new THREE.Mesh(new THREE.TorusGeometry(2.25, .01, 8, 160), ring2Mat); ring2.rotation.x = Math.PI / 2; portal.add(ring2);
+    const ticks = new THREE.Group(); portal.add(ticks);
+    for (let i = 0; i < 48; i++) {
+      const m = new THREE.Mesh(new THREE.PlaneGeometry(.025, i % 4 ? .1 : .22), ring2Mat);
+      const a = i / 48 * Math.PI * 2; m.position.set(Math.cos(a) * 1.92, .01, Math.sin(a) * 1.92);
+      m.rotation.x = -Math.PI / 2; m.rotation.z = -a + Math.PI / 2; ticks.add(m);
+    }
+    const shock = new THREE.Mesh(new THREE.RingGeometry(.94, 1, 128), new THREE.MeshBasicMaterial({ color: new THREE.Color(4, 3, 1.6), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }));
+    shock.rotation.x = -Math.PI / 2; portal.add(shock);
+
+    const beam = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.5, 14, 64, 1, true), new THREE.ShaderMaterial({
+      uniforms: { uOpacity: { value: 0 }, uTime: { value: 0 } },
+      vertexShader: `varying vec2 vUv; varying vec3 vN; varying vec3 vV;
+    void main(){ vUv=uv; vec4 mv=modelViewMatrix*vec4(position,1.); vN=normalize(normalMatrix*normal); vV=normalize(-mv.xyz); gl_Position=projectionMatrix*mv; }`,
+      fragmentShader: `uniform float uOpacity; uniform float uTime; varying vec2 vUv; varying vec3 vN; varying vec3 vV;
+    void main(){ float fres=clamp(1.-abs(dot(vN,vV)),0.,1.); float fade=pow(clamp(1.-vUv.y,0.,1.),1.7);
+      float streak=.65+.35*sin(vUv.x*80.+uTime*1.5)*sin(vUv.y*9.-uTime*4.);
+      float a=(.18+pow(fres,1.6))*fade*streak*uOpacity; gl_FragColor=vec4(vec3(1.,.74,.36),clamp(a*.55,0.,1.));   // soft gold veil, never a white wall over the book
+      #include <tonemapping_fragment>
+      #include <colorspace_fragment>
+    }`,
+      transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide,
+    }));
+    beam.position.y = FLOOR_Y + 7; scene.add(beam);
+
+    /* ==========================================================================
+       Particles
+       ========================================================================== */
+    const PIXEL = { value: renderer.getPixelRatio() };
+    const dust = (() => {
+      const n = 900, pos = new Float32Array(n * 3), seed = new Float32Array(n);
+      for (let i = 0; i < n; i++) {
+        pos[i * 3] = (Math.random() - .5) * 30; pos[i * 3 + 1] = FLOOR_Y + Math.random() * 13; pos[i * 3 + 2] = -14 + Math.random() * 13;   // dust stays behind the book, never over the pages seed[i] = Math.random();
+      }
+      const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.setAttribute('aSeed', new THREE.BufferAttribute(seed, 1));
+      const m = new THREE.ShaderMaterial({
+        uniforms: { uTime: { value: 0 }, uPixel: PIXEL, uBoost: { value: 0 } },
+        vertexShader: `attribute float aSeed; uniform float uTime; uniform float uPixel; uniform float uBoost; varying float vA;
+      void main(){ vec3 p=position; float t=uTime*(.25+aSeed*.4);
+        p.x+=sin(t+aSeed*40.)*.5; p.y+=mod(uTime*.12*(.3+aSeed)+aSeed*13.,13.)-6.5+sin(t*1.3)*.3; p.z+=cos(t+aSeed*20.)*.4;
+        vec4 mv=modelViewMatrix*vec4(p,1.); gl_PointSize=(6.+aSeed*16.)*uPixel*(1.+uBoost)/-mv.z*4.;
+        vA=(.25+.75*abs(sin(uTime*(.6+aSeed)+aSeed*30.)))*(1.+uBoost*2.); gl_Position=projectionMatrix*mv; }`,
+        fragmentShader: `varying float vA; void main(){ float d=length(gl_PointCoord-.5); float a=smoothstep(.5,0.,d); gl_FragColor=vec4(vec3(1.,.84,.58)*1.4,clamp(a*a*vA*.3,0.,1.));
+      #include <tonemapping_fragment>
+      #include <colorspace_fragment>
+    }`,
+        transparent: true, blending: THREE.AdditiveBlending, depthWrite: false,
+      });
+      const pts = new THREE.Points(g, m); pts.frustumCulled = false; scene.add(pts); return m;
+    })();
+
+    class Sparks {
+      constructor(n) {
+        this.n = n; this.cur = 0;
+        this.pos = new Float32Array(n * 3).fill(999); this.vel = new Float32Array(n * 3);
+        this.life = new Float32Array(n); this.decay = new Float32Array(n); this.grav = new Float32Array(n); this.size = new Float32Array(n);
+        const g = new THREE.BufferGeometry();
+        this.aPos = new THREE.BufferAttribute(this.pos, 3); this.aLife = new THREE.BufferAttribute(this.life, 1);
+        g.setAttribute('position', this.aPos); g.setAttribute('aLife', this.aLife); g.setAttribute('aSize', new THREE.BufferAttribute(this.size, 1));
+        this.sizeAttr = g.attributes.aSize;
+        const m = new THREE.ShaderMaterial({
+          uniforms: { uPixel: PIXEL },
+          vertexShader: `attribute float aLife; attribute float aSize; uniform float uPixel; varying float vL;
+        void main(){ vL=aLife; vec4 mv=modelViewMatrix*vec4(position,1.); gl_PointSize=aSize*uPixel*(.3+aLife)*60./-mv.z; gl_Position=projectionMatrix*mv; }`,
+          fragmentShader: `varying float vL; void main(){ float d=length(gl_PointCoord-.5); if(d>.5) discard; float a=smoothstep(.5,0.,d);
+        vec3 c=mix(vec3(1.,.45,.15),vec3(1.,.92,.7),vL)*2.; gl_FragColor=vec4(c,clamp(a*a*vL,0.,1.));
+        #include <tonemapping_fragment>
+        #include <colorspace_fragment>
+      }`,
+          transparent: true, blending: THREE.AdditiveBlending, depthWrite: false,
+        });
+        this.points = new THREE.Points(g, m); this.points.frustumCulled = false; scene.add(this.points);
+      }
+      emit(count, o, { spread = .2, vel, decay = .6, grav = 4, size = 1 }) {
+        const v = new THREE.Vector3();
+        for (let k = 0; k < count; k++) {
+          const i = this.cur; this.cur = (i + 1) % this.n;
+          this.pos[i * 3] = o.x + (Math.random() - .5) * spread * (o.sx || 1);
+          this.pos[i * 3 + 1] = o.y + (Math.random() - .5) * spread * (o.sy || 1);
+          this.pos[i * 3 + 2] = o.z + (Math.random() - .5) * spread;
+          vel(v); this.vel[i * 3] = v.x; this.vel[i * 3 + 1] = v.y; this.vel[i * 3 + 2] = v.z;
+          this.life[i] = 1; this.decay[i] = decay * (.6 + Math.random() * .8); this.grav[i] = grav; this.size[i] = size * (.4 + Math.random());
+        }
+        this.sizeAttr.needsUpdate = true;
+      }
+      update(dt) {
+        const drag = Math.pow(.35, dt);
+        for (let i = 0; i < this.n; i++) {
+          if (this.life[i] <= 0) continue;
+          this.vel[i * 3 + 1] -= this.grav[i] * dt;
+          for (let a = 0; a < 3; a++) { this.vel[i * 3 + a] *= drag; this.pos[i * 3 + a] += this.vel[i * 3 + a] * dt; }
+          this.life[i] = Math.max(0, this.life[i] - this.decay[i] * dt);
+        }
+        this.aPos.needsUpdate = true; this.aLife.needsUpdate = true;
+      }
+    }
+    const sparks = new Sparks(2600);
+
+    const confetti = (() => {
+      const n = 280, geo = new THREE.PlaneGeometry(.07, .13);
+      const mat = new THREE.MeshStandardMaterial({ metalness: .9, roughness: .28, side: THREE.DoubleSide, envMapIntensity: 1.8 });
+      const mesh = new THREE.InstancedMesh(geo, mat, n); mesh.frustumCulled = false; scene.add(mesh);
+      const palette = [0xf3d68a, 0xd7a54a, 0xfff3d0, 0xb98330, 0xe8c27a].map(c => new THREE.Color(c));
+      const P = [], dummy = new THREE.Object3D();
+      for (let i = 0; i < n; i++) {
+        mesh.setColorAt(i, palette[i % palette.length]);
+        P.push({ p: new THREE.Vector3(0, -99, 0), v: new THREE.Vector3(), r: new THREE.Euler(), s: new THREE.Vector3(), ph: Math.random() * 6.28, live: false });
+      }
+      const spawn = (c) => {
+        c.p.set((Math.random() - .5) * 14, 6 + Math.random() * 6, -4 + Math.random() * 7);
+        c.v.set(0, -(.7 + Math.random() * .9), 0); c.s.set(Math.random() * 6, Math.random() * 6, Math.random() * 6); c.live = true;
+      };
+      return {
+        on: false,
+        start() { this.on = true; P.forEach(c => { spawn(c); c.p.y += Math.random() * 8; }); },
+        update(dt, t) {
+          for (let i = 0; i < n; i++) {
+            const c = P[i];
+            if (c.live) {
+              c.p.y += c.v.y * dt; c.p.x += Math.sin(t * 1.4 + c.ph) * .5 * dt;
+              c.r.x += c.s.x * dt; c.r.y += c.s.y * dt; c.r.z += c.s.z * dt;
+              if (c.p.y < FLOOR_Y) { if (this.on) spawn(c); else { c.live = false; c.p.y = -99; } }
+            }
+            dummy.position.copy(c.p); dummy.rotation.copy(c.r); dummy.scale.setScalar(c.live ? 1 : 0); dummy.updateMatrix();
+            mesh.setMatrixAt(i, dummy.matrix);
+          }
+          mesh.instanceMatrix.needsUpdate = true;
+        },
+      };
+    })();
+
+    /* ==========================================================================
+       Camera framing (aspect-aware)
+       ========================================================================== */
+    const FR = {
+      intro: { w: 10, h: 8.6, y: -.7 },
+      closed: { w: W + 2, h: H + 2.9, y: .4 },   // leaves room above the book for the caption
+      open: { w: 2 * W + .6, h: H + 1.9, y: .3 },
+      final: { w: 7, h: 10, y: 0 },
+    };
+    const frame = { ...FR.intro };
+    function fitDistance(w, h) {
+      const t = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+      return Math.max(h / (2 * t), w / (2 * t * camera.aspect));
+    }
+    const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
+    addEventListener('pointermove', e => { mouse.tx = e.clientX / innerWidth - .5; mouse.ty = e.clientY / innerHeight - .5; });
+
+    /* ==========================================================================
+       UI helpers: countdown, caption, progress, QR
+       ========================================================================== */
+    const SPREADS = CONFIG.spreads;
+    let pdfLoaded = false;
+    progressEl.innerHTML = SPREADS.map(() => '<i></i>').join('');
+    function showCount(n) {
+      Sfx.tick(n); countEl.textContent = n;
+      // transform + opacity only: GPU-composited, no full-screen blur repaint
+      gsap.fromTo(countEl, { opacity: 0, scale: 1.6 }, { opacity: 1, scale: 1, duration: .5, ease: 'expo.out', force3D: true });
+      gsap.to(countEl, { opacity: 0, scale: .8, duration: .32, delay: .55, ease: 'power2.in', force3D: true });
+    }
+    function setCaption(eyebrow, title) {
+      gsap.timeline()
+        .to(capEl, { opacity: 0, y: -10, duration: .25, ease: 'power2.in' })
+        .call(() => { capEyebrow.textContent = eyebrow; capTitle.innerHTML = title; })
+        .fromTo(capEl, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: .6, ease: 'expo.out' });
+    }
+    function spreadCaption(i) {
+      const [e, t] = SPREADS[i];
+      setCaption(e, t);
+      [...progressEl.children].forEach((el, k) => el.classList.toggle('on', k <= i));
+      gsap.to(progressEl, { opacity: 1, duration: .5 });
+    }
+    function hideCaption() { gsap.to([capEl, progressEl], { opacity: 0, duration: .4 }); }
+
+    const qrCanvas = $('qr'), qrCtx = qrCanvas.getContext('2d'), qrData = makeQR(CONFIG.qrUrl), qrAnim = { t: 0 };
+    function drawQR() {
+      const S = qrCanvas.width; qrCtx.fillStyle = '#fff'; qrCtx.fillRect(0, 0, S, S);
+      if (!qrData) { qrCtx.fillStyle = '#121a33'; qrCtx.font = '20px Inter'; qrCtx.textAlign = 'center'; qrCtx.fillText('QR unavailable', S / 2, S / 2); return; }
+      const n = qrData.n, m = S / n, maxD = Math.hypot(n / 2, n / 2), T = qrAnim.t * 1.35;
+      qrCtx.fillStyle = '#121a33';
+      for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
+        if (!qrData.dark(r, c)) continue;
+        const d = Math.hypot(r - n / 2, c - n / 2) / maxD, k = Math.min(1, Math.max(0, (T - d) / .35));
+        if (k <= 0) continue;
+        const e = 1 - Math.pow(1 - k, 3), s = m * e;
+        qrCtx.fillRect(c * m + (m - s) / 2, r * m + (m - s) / 2, s + .6, s + .6);
+      }
+    }
+    drawQR();
+
+    /* ==========================================================================
+       Sequence
+       ========================================================================== */
+    const state = { phase: 'loading', cover: 0, open: 0, float: 0, trail: false };
+    let master = null;
+
+    function ignite() {
+      Sfx.boom();
+      // soft golden bloom of light — rises and falls smoothly instead of a hard white strobe
+      gsap.timeline()
+        .to(flashEl, { opacity: .6, duration: .12, ease: 'power1.out' })
+        .to(flashEl, { opacity: 0, duration: 1.3, ease: 'power2.out' });
+      gsap.fromTo(shock.scale, { x: 1, y: 1, z: 1 }, { x: 10, y: 10, z: 10, duration: 1.8, ease: 'expo.out' });
+      gsap.fromTo(shock.material, { opacity: 1 }, { opacity: 0, duration: 1.8, ease: 'power2.out' });
+      gsap.fromTo(dust.uniforms.uBoost, { value: 1.5 }, { value: 0, duration: 3, ease: 'power2.out' });
+      const o = { x: 0, y: FLOOR_Y + .1, z: 0 };
+      sparks.emit(1100, o, { spread: .6, decay: .45, grav: 4.5, size: 1, vel: v => { const a = Math.random() * 6.283, r = 1 + Math.random() * 6; v.set(Math.cos(a) * r, 4 + Math.random() * 12, Math.sin(a) * r); } });
+      sparks.emit(500, o, { spread: .2, decay: .9, grav: 0, size: .8, vel: v => { const a = Math.random() * 6.283, r = 7 + Math.random() * 7; v.set(Math.cos(a) * r, .2 + Math.random() * .6, Math.sin(a) * r); } });
+    }
+
+    function launch() {
+      if (state.phase !== 'idle') return;
+      state.phase = 'running'; Sfx.init();
+      const tl = master = gsap.timeline();
+      tl.to(introEl, { autoAlpha: 0, y: -24, duration: .6, ease: 'power2.in' }, 0);
+      tl.to(frame, { ...FR.intro, y: -1.2, h: 7.6, duration: 3, ease: 'power1.inOut' }, 0);
+      tl.to(portalU, { charge: 1, duration: 3, ease: 'power2.in' }, .2);
+      tl.call(() => Sfx.whoosh(.18), null, .4);
+      [3, 2, 1].forEach((n, i) => tl.call(() => showCount(n), null, .6 + i * .95));
+
+      const T = 3.5;
+      tl.call(ignite, null, T);
+      tl.set(bookRoot, { visible: true }, T);
+      tl.fromTo(bookRoot.position, { y: -7.5 }, { y: 0, duration: 2.8, ease: 'expo.out' }, T);
+      tl.fromTo(bookRoot.rotation, { x: .5, y: -Math.PI * 2, z: .15 }, { x: 0, y: 0, z: 0, duration: 3.6, ease: 'power3.out' }, T);
+      tl.fromTo(bookRoot.scale, { x: .45, y: .45, z: .45 }, { x: 1, y: 1, z: 1, duration: 2.4, ease: 'expo.out' }, T);
+      tl.to(frame, { ...FR.closed, duration: 2.8, ease: 'power3.inOut' }, T - .2);
+      tl.set(state, { trail: true }, T); tl.set(state, { trail: false }, T + 1.8);
+      // beam in & out on the same timeline, so a slow frame can never leave it stuck on
+      tl.fromTo(beam.material.uniforms.uOpacity, { value: 0 }, { value: 1, duration: .25, ease: 'power2.out', immediateRender: false }, T);
+      tl.to(beam.material.uniforms.uOpacity, { value: 0, duration: 1.8, ease: 'power2.inOut' }, T + .6);
+      tl.to(portalU, { charge: .2, duration: 2.5 }, T + .8);
+      tl.to(state, { float: 1, duration: 1.5 }, T + 2.6);
+      tl.call(() => { setCaption('Introducing', `<em>${titleOneLine}</em>`); Sfx.chime(); }, null, T + 2.2);
+
+      const O = T + 4.6;   // open the cover
+      tl.call(() => Sfx.flip(.5), null, O);
+      tl.to(state, { cover: 1, open: 1, duration: 1.8, ease: 'power2.inOut' }, O);
+      tl.to(frame, { ...FR.open, duration: 1.8, ease: 'power2.inOut' }, O);
+      tl.call(() => spreadCaption(0), null, O + 1.1);
+
+      let t = O + 1.8 + 2.1;
+      for (let i = 0; i < LEAVES; i++) {
+        tl.call(() => Sfx.flip(), null, t);
+        tl.to(book.leaves[i], { p: 1, duration: 1.35, ease: 'power2.inOut' }, t);
+        tl.call(() => spreadCaption(i + 1), null, t + .75);
+        t += 1.35 + 2.1;
+      }
+
+      // close the book with a fanned cascade
+      tl.call(() => { hideCaption(); Sfx.whoosh(.35); }, null, t);
+      for (let k = 0; k < LEAVES; k++) tl.to(book.leaves[LEAVES - 1 - k], { p: 0, duration: 1, ease: 'power2.inOut' }, t + k * .08);
+      const tc = t + LEAVES * .08;
+      tl.to(state, { cover: 0, open: 0, duration: 1.15, ease: 'power2.inOut' }, tc);
+      tl.to(frame, { ...FR.closed, duration: 1.15, ease: 'power2.inOut' }, tc);
+      tl.call(runFinale, null, tc + 1.15);
+    }
+
+    function placement() {
+      const f = FR.final, D = fitDistance(f.w, f.h);
+      const wpp = 2 * D * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) / innerHeight;
+      const pr = panelEl.getBoundingClientRect();
+      let cx, cy, availW, availH;
+      if (innerWidth > 760) {          // side by side: book centred in the space left of the panel
+        cx = pr.left / 2; cy = innerHeight / 2 + 10;
+        availW = pr.left - 40; availH = innerHeight - 150;
+      } else {                         // stacked: book centred above the panel
+        const top = 70, bot = pr.top - 16;
+        cx = innerWidth / 2; cy = (top + bot) / 2;
+        availW = innerWidth - 32; availH = Math.max(bot - top, 120);
+      }
+      return {
+        x: (cx - innerWidth / 2) * wpp,
+        y: (innerHeight / 2 - cy) * wpp + f.y,
+        s: Math.min(1.5, availH * wpp * .88 / (H + 2 * OVER), availW * wpp * .8 / (W + OVER)),
+      };
+    }
+
+    function runFinale() {
+      state.phase = 'final';
+      finaleEl.classList.add('show');
+      const pl = placement();
+      gsap.to(frame, { ...FR.final, duration: 1.8, ease: 'power3.inOut' });
+      gsap.to(bookRoot.position, { x: pl.x, y: pl.y, duration: 1.8, ease: 'power3.inOut' });
+      gsap.to(beam.material.uniforms.uOpacity, { value: 0, duration: .6 });   // safety: no beam in the finale
+      // the glowing floor oval travels with the book and settles right underneath it
+      gsap.to(portal.position, { x: pl.x, duration: 1.8, ease: 'power3.inOut' });
+      gsap.to(portal.scale, { x: pl.s, y: pl.s, z: pl.s, duration: 1.8, ease: 'power3.inOut' });
+      gsap.to(portalU, { charge: .5, duration: 1.4, delay: 1, ease: 'power2.out' });
+      gsap.to(bookRoot.scale, { x: pl.s, y: pl.s, z: pl.s, duration: 1.8, ease: 'power3.inOut' });
+      gsap.to(bookRoot.rotation, { y: .42, x: .05, duration: 2, ease: 'power3.inOut' });
+      const side = innerWidth > 760;   // panel slides in from the right (or up, when stacked)
+      gsap.fromTo(headEl, { autoAlpha: 0, x: side ? 40 : 0, y: side ? 0 : 20 }, { autoAlpha: 1, x: 0, y: 0, duration: 1.1, delay: .7, ease: 'expo.out' });
+      gsap.fromTo(cardEl, { autoAlpha: 0, x: side ? 80 : 0, y: side ? 0 : 50, scale: .94 }, { autoAlpha: 1, x: 0, y: 0, scale: 1, duration: 1.3, delay: .95, ease: 'expo.out' });
+      qrAnim.t = 0; drawQR();
+      gsap.to(qrAnim, { t: 1, duration: 1.7, delay: 1.2, ease: 'power1.out', onUpdate: drawQR, onStart: () => Sfx.chime(), onComplete: () => cardEl.classList.add('scanning') });
+      gsap.delayedCall(.9, () => {
+        confetti.start();
+        const wp = new THREE.Vector3(); bookRoot.getWorldPosition(wp);
+        sparks.emit(500, wp, { spread: 1.2, decay: .7, grav: 1.5, size: .7, vel: v => v.set((Math.random() - .5) * 8, (Math.random() - .3) * 8, (Math.random() - .5) * 6) });
+      });
+      gsap.delayedCall(9, () => { confetti.on = false; });
+    }
+
+    function reset() {
+      master?.kill();
+      gsap.killTweensOf([frame, state, portalU, portal.position, portal.scale, bookRoot.position, bookRoot.rotation, bookRoot.scale, qrAnim, headEl, cardEl, capEl, progressEl, ...book.leaves]);
+      gsap.globalTimeline.getChildren(false, true, true).forEach(c => c.kill());   // incl. pending delayedCalls
+      state.cover = 0; state.open = 0; state.float = 0; state.trail = false;
+      book.leaves.forEach(l => { l.p = 0; });
+      bookRoot.visible = false; bookRoot.position.set(0, -7.5, 0); bookRoot.rotation.set(0, 0, 0); bookRoot.scale.setScalar(1);
+      finaleEl.classList.remove('show'); cardEl.classList.remove('scanning');
+      gsap.set([headEl, cardEl], { autoAlpha: 0 }); gsap.set([capEl, progressEl], { opacity: 0 });
+      confetti.on = false; portalU.charge = .15; beam.material.uniforms.uOpacity.value = 0;
+      portal.position.x = 0; portal.scale.setScalar(1);   // oval back to centre stage for a replay
+      Object.assign(frame, FR.intro);
+      state.phase = 'idle';
+    }
+
+    launchBtn.addEventListener('click', launch);
+    $('replayBtn').addEventListener('click', () => { reset(); gsap.delayedCall(.2, launch); });
+    addEventListener('keydown', e => {
+      if ((e.code === 'Space' || e.code === 'Enter') && e.target !== launchBtn && state.phase === 'idle') { e.preventDefault(); launch(); }
+    });
+
+    /* ==========================================================================
+       PDF support — renders your real pages onto the book (pdf.js)
+       ========================================================================== */
+    function loadScript(src) { return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); }
+    async function loadPdf(source, name) {
+      try {
+        toast('Loading PDF pages…', 10000);
+        if (!window.pdfjsLib) {
+          await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
+          pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+        const doc = await pdfjsLib.getDocument(typeof source === 'string' ? { url: source } : { data: source }).promise;
+        const render = async (n) => {
+          const page = await doc.getPage(n), v1 = page.getViewport({ scale: 1 }), vp = page.getViewport({ scale: 2200 / v1.height });
+          const c = mkCanvas(Math.round(vp.width), Math.round(vp.height));
+          await page.render({ canvasContext: c.getContext('2d'), viewport: vp }).promise; return c;
+        };
+        // cover = page 1 (cover-fit, no foil)
+        const img = await render(1), ctx = book.coverCanvas.getContext('2d');
+        const s = Math.max(CW / img.width, CH / img.height);
+        ctx.fillStyle = '#0e1836'; ctx.fillRect(0, 0, CW, CH);
+        ctx.drawImage(img, (CW - img.width * s) / 2, (CH - img.height * s) / 2, img.width * s, img.height * s);
+        const pc = book.coverPbr.getContext('2d'); pc.fillStyle = 'rgb(0,120,0)'; pc.fillRect(0, 0, CW, CH);
+        book.coverMat.map.needsUpdate = true; book.coverMat.metalnessMap.needsUpdate = true;
+        book.coverMat.emissiveIntensity = .55; book.coverMat.clearcoat = .08;   // printed cover: true colours, little glare
+        // interior: pages 2..12
+        for (let i = 0; i < book.sides.length; i++) {
+          const n = i + 2; if (n > doc.numPages) break;
+          const pimg = await render(n), side = book.sides[i], left = i % 2 === 1 && i !== 10;
+          // re-draw at 1.5× resolution so the handbook's small text stays legible
+          const HR = 1.5, big = mkCanvas(Math.round(PW * HR), Math.round(PH * HR)), c = big.getContext('2d');
+          c.scale(HR, HR); c.imageSmoothingQuality = 'high';
+          paper(c, left);
+          const k = Math.min((PW - 40) / pimg.width, (PH - 40) / pimg.height), w = pimg.width * k, h = pimg.height * k;
+          c.drawImage(pimg, (PW - w) / 2, (PH - h) / 2, w, h);
+          const gx = left ? PW : 0, g = c.createLinearGradient(gx, 0, left ? PW - 110 : 110, 0);
+          g.addColorStop(0, 'rgba(60,40,20,.18)'); g.addColorStop(1, 'rgba(60,40,20,0)'); c.fillStyle = g; c.fillRect(0, 0, PW, PH);
+          const old = side.mat.map, nt = tex(big);
+          nt.wrapS = old.wrapS; nt.repeat.copy(old.repeat); nt.offset.copy(old.offset);
+          side.mat.map = nt; side.mat.emissiveMap = nt; side.mat.needsUpdate = true; side.canvas = big; old.dispose();
+        }
+        pdfLoaded = true; toast(`Loaded “${name || source}” · ${doc.numPages} pages`);
+        if (!CONFIG.downloadUrl && typeof source === 'string') $('dlBtn').href = source;
+      } catch (err) {
+        console.error(err); toast('Could not load the PDF — using the designed preview pages instead.');
+      }
+    }
+    const dropEl = $('drop');
+    addEventListener('dragover', e => { e.preventDefault(); dropEl.classList.add('on'); });
+    addEventListener('dragleave', e => { if (e.relatedTarget === null) dropEl.classList.remove('on'); });
+    addEventListener('drop', async e => {
+      e.preventDefault(); dropEl.classList.remove('on');
+      const f = [...e.dataTransfer.files].find(f => f.type === 'application/pdf' || /\.pdf$/i.test(f.name));
+      if (f) loadPdf(new Uint8Array(await f.arrayBuffer()), f.name); else toast('Please drop a PDF file.');
+    });
+
+    /* ==========================================================================
+       Loop
+       ========================================================================== */
+    // Rendered from GSAP's ticker so every tween is updated before the frame is drawn (no 1-frame jitter).
+    function frameLoop(time, deltaMs) {
+      const dt = Math.min(deltaMs / 1000, .05), t = time;
+
+      // book mechanics
+      for (const l of book.leaves) bendLeaf(l);
+      if (book.coverPivot) {
+        const c = state.cover, s = c * c * (3 - 2 * c);
+        book.coverPivot.rotation.y = -c * Math.PI;
+        book.coverPivot.position.z = ((LEAVES + 1) * GAP + CT / 2) * (1 - s) + (-CT / 2 - .001) * s;
+      }
+      bookGroup.position.x = -W / 2 * (1 - state.open);
+      floatGroup.position.y = Math.sin(t * 1.1) * .07 * state.float;
+      floatGroup.rotation.y = Math.sin(t * .55) * .045 * state.float;
+      floatGroup.rotation.x = Math.sin(t * .8) * .015 * state.float;
+
+      if (state.trail) {
+        const wp = new THREE.Vector3(); bookRoot.getWorldPosition(wp); wp.sx = 3; wp.sy = 4;
+        sparks.emit(14, wp, { spread: 1, decay: 1.1, grav: -.6, size: .6, vel: v => v.set((Math.random() - .5) * 1.2, -1 - Math.random() * 2, (Math.random() - .5) * 1.2) });
+      }
+
+      // stage
+      const ch = portalU.charge, pulse = .85 + .15 * Math.sin(t * 2.2);
+      glowMat.opacity = (.12 + ch * .7) * pulse;
+      ringMat.color.setRGB(1.2 + ch * 3, .9 + ch * 2.2, .45 + ch * 1.1);
+      ring1.scale.setScalar(1 + Math.sin(t * 1.6) * .015);
+      ticks.rotation.y = t * (.08 + ch * .9);
+      beam.material.uniforms.uTime.value = t;
+      dust.uniforms.uTime.value = t;
+      sparks.update(dt);
+      confetti.update(dt, t);
+
+      // camera
+      const damp = 1 - Math.exp(-dt * 2.2);   // frame-rate independent easing
+      mouse.x += (mouse.tx - mouse.x) * damp; mouse.y += (mouse.ty - mouse.y) * damp;
+      const D = fitDistance(frame.w, frame.h);
+      camera.position.set(mouse.x * 1.1, frame.y + .45 - mouse.y * .6, D);
+      camera.lookAt(0, frame.y, 0);
+      scene.fog.near = D + 4; scene.fog.far = D + 26;   // keep the book crisp at any aspect ratio
+      key.position.set(4 + mouse.x * 2, 8, 10);
+
+      renderer.render(scene, camera);
+      if (!shown) { shown = true; requestAnimationFrame(() => canvas.classList.add('ready')); }
+    }
+    let shown = false;
+
+    // Upload every texture and compile every shader up front, so the book's first appearance doesn't hitch.
+    function warmUp() {
+      const was = bookRoot.visible; bookRoot.visible = true;
+      scene.traverse(o => {
+        if (!o.material) return;
+        (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => {
+          ['map', 'emissiveMap', 'metalnessMap', 'roughnessMap'].forEach(k => { if (m[k]) renderer.initTexture(m[k]); });
+        });
+      });
+      renderer.compile(scene, camera);   // compile only — never present a warm-up frame on screen
+      bookRoot.visible = was;
+    }
+
+    addEventListener('resize', () => {
+      camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+      PIXEL.value = renderer.getPixelRatio();
+      renderer.render(scene, camera);   // resizing clears the canvas — redraw now so there's no black frame
+      if (state.phase === 'final') { const pl = placement(); bookRoot.position.x = pl.x; bookRoot.position.y = pl.y; bookRoot.scale.setScalar(pl.s); portal.position.x = pl.x; portal.scale.setScalar(pl.s); }
+    });
+
+    /* ==========================================================================
+       Boot
+       ========================================================================== */
+    await Promise.race([
+      Promise.all(['700 64px "Playfair Display"', 'italic 400 40px "Playfair Display"', '400 30px "EB Garamond"', 'italic 400 30px "EB Garamond"', '500 30px Inter', '600 30px Inter']
+        .map(f => document.fonts.load(f))),
+      new Promise(r => setTimeout(r, 3000)),
+    ]);
+    buildBook();
+    gsap.ticker.add(frameLoop);
+    gsap.from(introEl.children, { opacity: 0, y: 24, duration: 1.2, stagger: .12, ease: 'expo.out' });
+    // Load the PDF *before* enabling launch, so page rendering never competes with the animation.
+    if (CONFIG.pdfUrl) await loadPdf(CONFIG.pdfUrl);
+    warmUp();
+    launchBtn.disabled = false; launchBtn.textContent = 'Launch the Book';
+    state.phase = 'idle';
+  </script>
+</body>
+
+</html>

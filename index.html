@@ -191,34 +191,150 @@
       pointer-events: none
     }
 
-    .intro .eyebrow {
-      margin-bottom: 22px
+    /* invitation-style pre-launch screen */
+    .intro-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 18px 9px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(14, 17, 30, .45);
+      backdrop-filter: blur(8px);
+      font: 500 11px/1 var(--sans);
+      letter-spacing: .28em;
+      text-transform: uppercase;
+      color: var(--gold-1)
+    }
+
+    .intro-chip .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gold-1);
+      box-shadow: 0 0 10px var(--gold-1);
+      animation: blink 2.4s ease-in-out infinite
+    }
+
+    .intro-kicker {
+      margin: clamp(18px, 3.4vh, 30px) 0 6px;
+      font: italic 400 clamp(15px, 1.5vw, 19px)/1.3 var(--serif);
+      color: var(--muted);
+      letter-spacing: .02em
     }
 
     .intro h1 {
-      font: 400 clamp(40px, 7.2vw, 104px)/.98 var(--serif);
-      letter-spacing: -.01em
+      font: 400 clamp(46px, 8vw, 118px)/.94 var(--serif);
+      letter-spacing: -.015em;
+      text-shadow: 0 10px 60px rgba(0, 0, 0, .5)
     }
 
     .intro h1 em {
       display: block;
       font-style: italic;
-      font-weight: 500
+      font-weight: 500;
+      padding-bottom: .06em
     }
 
-    .intro-sub {
-      margin: 22px auto 44px;
-      max-width: 520px;
-      font: 300 clamp(14px, 1.4vw, 17px)/1.6 var(--sans);
-      color: var(--muted)
+    .intro-theme {
+      margin-top: clamp(12px, 2vh, 18px);
+      max-width: 620px;
+      font: 300 clamp(14px, 1.35vw, 17px)/1.6 var(--sans);
+      letter-spacing: .04em;
+      color: rgba(244, 239, 228, .78)
+    }
+
+    .intro-rule {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: clamp(16px, 3vh, 26px) 0 clamp(14px, 2.6vh, 22px)
+    }
+
+    .intro-rule i {
+      width: clamp(50px, 9vw, 110px);
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-2))
+    }
+
+    .intro-rule i:last-child {
+      background: linear-gradient(90deg, var(--gold-2), transparent)
+    }
+
+    .intro-rule b {
+      width: 7px;
+      height: 7px;
+      background: var(--gold-1);
+      transform: rotate(45deg);
+      box-shadow: 0 0 10px rgba(243, 214, 138, .7)
+    }
+
+    .intro-meta {
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      margin-bottom: clamp(24px, 4.6vh, 42px)
+    }
+
+    .intro-meta div {
+      padding: 0 clamp(16px, 2.6vw, 34px);
+      border-left: 1px solid rgba(244, 239, 228, .14)
+    }
+
+    .intro-meta div:first-child {
+      border-left: 0
+    }
+
+    .intro-meta dt {
+      font: 500 10px/1 var(--sans);
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--gold-2);
+      margin-bottom: 9px
+    }
+
+    .intro-meta dd {
+      font: 400 clamp(14px, 1.3vw, 17px)/1.3 var(--serif);
+      color: var(--ink);
+      white-space: nowrap
+    }
+
+    /* thin gold frame corners, like a printed invitation */
+    .corner {
+      position: absolute;
+      width: clamp(28px, 4vw, 54px);
+      height: clamp(28px, 4vw, 54px);
+      border: 1px solid rgba(243, 214, 138, .45)
+    }
+
+    .c-tl { top: 84px; left: clamp(16px, 3vw, 36px); border-right: 0; border-bottom: 0 }
+    .c-tr { top: 84px; right: clamp(16px, 3vw, 36px); border-left: 0; border-bottom: 0 }
+    .c-bl { bottom: 56px; left: clamp(16px, 3vw, 36px); border-right: 0; border-top: 0 }
+    .c-br { bottom: 56px; right: clamp(16px, 3vw, 36px); border-left: 0; border-top: 0 }
+
+    .intro-foot {
+      position: absolute;
+      left: clamp(16px, 3vw, 36px);
+      right: clamp(16px, 3vw, 36px);
+      bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      font: 500 10px/1.4 var(--sans);
+      letter-spacing: .26em;
+      text-transform: uppercase;
+      color: rgba(244, 239, 228, .42)
     }
 
     .launch {
       pointer-events: auto;
       position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
       border: 0;
       cursor: pointer;
-      padding: 22px 52px;
+      padding: 21px 30px 21px 46px;
       border-radius: 999px;
       font: 600 13px/1 var(--sans);
       letter-spacing: .32em;
@@ -238,6 +354,19 @@
     .launch:disabled {
       filter: saturate(.3) brightness(.7);
       cursor: wait
+    }
+
+    .launch-ico {
+      width: 30px;
+      height: 30px;
+      padding: 7px;
+      border-radius: 50%;
+      background: rgba(27, 19, 7, .12);
+      transition: transform .35s cubic-bezier(.2, .8, .2, 1)
+    }
+
+    .launch:hover .launch-ico {
+      transform: translateX(4px)
     }
 
     .launch::after {
@@ -288,10 +417,10 @@
     }
 
     .hint {
-      margin-top: 34px;
+      margin-top: 18px;
       font: 400 12px var(--sans);
       color: rgba(244, 239, 228, .4);
-      letter-spacing: .04em
+      letter-spacing: .06em
     }
 
     kbd {
@@ -689,6 +818,36 @@
       .hint {
         display: none
       }
+
+      .intro-meta {
+        flex-direction: column;
+        gap: 12px
+      }
+
+      .intro-chip {
+        font-size: 9.5px;
+        letter-spacing: .16em;
+        padding: 8px 14px 8px 12px
+      }
+
+      .intro-meta div {
+        border-left: 0;
+        padding: 0
+      }
+
+      .intro-meta dd {
+        white-space: normal
+      }
+
+      .corner,
+      .intro-foot span:last-child {
+        display: none
+      }
+
+      .intro-foot {
+        justify-content: center;
+        text-align: center
+      }
     }
   </style>
 </head>
@@ -714,14 +873,24 @@
   </header>
 
   <section id="intro" class="intro">
-    <p class="eyebrow" id="introEyebrow">Digital Edition · Premiere</p>
-    <h1><span>A New Chapter</span><em class="gold-text">Begins</em></h1>
-    <p class="intro-sub" id="introSub"></p>
+    <div class="intro-chip"><span class="dot"></span><span id="introEyebrow">Digital Edition · Premiere</span></div>
+    <p class="intro-kicker" id="introKicker">The official launch of the</p>
+    <h1><span id="hl1">A New Chapter</span><em class="gold-text" id="hl2">Begins</em></h1>
+    <p class="intro-theme" id="introTheme"></p>
+    <div class="intro-rule" aria-hidden="true"><i></i><b></b><i></i></div>
+    <dl class="intro-meta">
+      <div><dt>Launch</dt><dd id="metaDate"></dd></div>
+      <div><dt>Publication</dt><dd id="metaPub"></dd></div>
+      <div><dt>Organized by</dt><dd id="metaOrg"></dd></div>
+    </dl>
     <div class="launch-wrap">
       <span class="ring"></span><span class="ring r2"></span>
-      <button id="launchBtn" class="launch" disabled>Preparing…</button>
+      <button id="launchBtn" class="launch" disabled><span class="launch-label">Preparing…</span>
+        <svg class="launch-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg></button>
     </div>
-    <p class="hint">Press <kbd>Space</kbd> to launch · Drop a PDF anywhere to preview your own pages</p>
+    <i class="corner c-tl" aria-hidden="true"></i><i class="corner c-tr" aria-hidden="true"></i>
+    <i class="corner c-bl" aria-hidden="true"></i><i class="corner c-br" aria-hidden="true"></i>
+    <footer class="intro-foot"><span id="footLeft"></span><span id="footRight"></span></footer>
   </section>
 
   <div id="countdown" class="countdown gold-text"></div>
@@ -767,6 +936,8 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+  <script src="book-covers.js"></script>
+  <script src="book-pages.js"></script>
   <script type="importmap">
 { "imports": {
   "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
@@ -782,44 +953,180 @@
        CONFIG — edit these for your launch
        ========================================================================== */
     const CONFIG = {
-      title: 'STUDENT HANDBOOK',     // use \n for a line break on the cover
-      subtitle: 'Bachelor of Science in Applied Accounting',
-      author: 'SAB Campus of CA Sri Lanka',
-      publisher: 'SAB Campus of CA Sri Lanka',
-      coverTag: 'A Digital Edition',
-      launchDate: 'October 2026',
+      title: 'Book of Abstracts',     // use \n for a line break on the cover
+      subtitle: 'SAB Students’ 5th Research Colloquium · SAB SRC 2026',
+      author: 'SAB Campus, CA Sri Lanka',
+      publisher: 'SAB Campus, CA Sri Lanka',
+      coverTag: 'SAB SRC 2026',
+      launchDate: '30th October 2026',
+      countdown: 10,   // seconds counted down (10 … 1) after pressing Launch
+      event: 'SAB Students’ 5th Research Colloquium',
+      publisherLong: 'SAB Campus · The Institute of Chartered Accountants of Sri Lanka',
+      headline: ['Balance', '& Beyond'],
+      theme: 'Re-imagining Business through Data and Sustainability',
+      // Which PDF pages appear on the 3D book (PDF page numbers, not printed numbers).
+      // sides = the 11 pages shown in the preview, in reading order.
+      pdfPages: {
+        cover: 1,
+        back: 126,
+        // title · 5 messages · contents · 10 panel pages (odd count: last one sits on the page block).
+        // Numbers are PDF pages; 'P1' … 'P10' are designed pages listing a panel and all its topics (CONFIG.panels).
+        sides: [2, 8, 9, 10, 11, 12, 13, 14, 15, 'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9', 'P10'],
+      },
       // Path/URL of your PDF. When served over http(s), its pages become the book's pages.
       // (Opening index.html directly from disk blocks this — drag & drop the PDF instead.)
       pdfUrl: 'book.pdf',
       qrUrl: 'https://casrilanka-my.sharepoint.com/:b:/p/salinda_wickramasinghe_sab/IQAVcHsi7RNwRZloecl6FdktAYix-cIAgFEu1QoHqQ4kS28',  // what the QR code opens
       downloadUrl: '',                              // defaults to pdfUrl, then qrUrl
-      // Captions shown above the book for each open spread (PDF pages 2 · 3–4 · 5–6 · 7–8 · 9–10 · 11–12)
+      // Captions shown above the book for each open spread
+      // (pages 2 · 8–9 · 10–11 · 12–13 · 14–15 · then the panel pages two at a time)
       spreads: [
-        ['Welcome', 'Student <em>Handbook</em> 2024'],
-        ['Preface & Contents', 'A Word from the <em>Director</em>'],
-        ['Chapter 1', 'The Institute of <em>CA Sri Lanka</em>'],
-        ['Vision & Values', 'Integrity · Excellence · <em>Collaboration</em>'],
-        ['Chapters 2 – 3', 'SAB Campus & the <em>Degree</em>'],
-        ['The Programme', 'Admission & <em>Structure</em>'],
+        ['SAB SRC 2026', 'Book of <em>Abstracts</em>'],
+        ['Messages', 'The President & <em>Vice President</em>'],
+        ['Messages', 'The CEO & <em>Keynote Speaker</em>'],
+        ['Message & Contents', 'The <em>Colloquium Chair</em>'],
+        ['Table of Content', 'Ten Research <em>Panels</em>'],
+        ['Panels I – II', 'Financial Reporting · <em>Fraud & Forensic Accounting</em>'],
+        ['Panels III – IV', 'Ethics & Governance · <em>Audit, Assurance & Taxation</em>'],
+        ['Panels V – VI', 'Corporate Finance · <em>Sustainability & ESG</em>'],
+        ['Panels VII – VIII', 'Management Accounting · <em>Data Analytics & Digital</em>'],
+        ['Panels IX – X', 'Contemporary Issues · <em>Multidisciplinary Approaches</em>'],
       ],
-      // Back cover (visible while the book spins in)
-      aboutLabel: 'About this Handbook',
-      backQuote: '“To be a leader in the accounting profession with a global footprint, promoting relevance and excellence.”',
+      pageHold: 1.8,   // seconds each open spread stays on screen
+      // Panels and their research topics (from the Table of Content) — shown as one designed page per panel
+      panels: [
+        { no: 'I', name: 'Financial Reporting and Analysis', topics: [
+          ['Barriers to the Implementation of Blockchain Technology in Financial Reporting and Auditing, Western Province of Sri Lanka', 23],
+          ['The Impact of SLFRS S1 and SLFRS S2 Adoption on Financial Reporting Quality in Public Listed Companies in Sri Lanka', 24],
+          ['The Impact of Mergers and Acquisitions on the Financial Performance of Listed Companies in Sri Lanka', 25],
+          ['The Impact of Working Capital Management on Financial Performance: The Moderating Role of Intellectual Capital in Listed Manufacturing Companies in Sri Lanka', 26],
+          ['The Effect of Digital Literacy on the Efficiency of Using ERP-Based Accounting Systems among Manufacturing SMEs in Western Province, Sri Lanka', 27],
+          ['The Role of Business Intelligence on Financial Performance with Mediation Effect of Operations Efficiency in Banking Sector (with Special Reference to State and Non-State Banks in Sri Lanka)', 28],
+          ['Technology Acceptance and Social Cognitive Determinants of Intention to Use Accounting Data Analytics Tools among Final-Year Accounting Undergraduates in Sri Lanka', 29],
+          ['Cloud ERP Systems, Intelligent Analytics and Corporate Decision Efficiency: The Mediating Role of User AI Literacy in Listed Sri Lankan Conglomerates', 30],
+        ] },
+        { no: 'II', name: 'Fraud and Forensic Accounting', topics: [
+          ['Impact of Forensic Accounting Techniques on Fraud Detection in the Sri Lankan Audit Sector: The Moderating Role of Fraud Risk Management', 32],
+          ['Impact of Internal Control Effectiveness on Fraud Detection: Evidence from Commercial Banks in Sri Lanka', 33],
+          ['Impact of Forensic Accounting Techniques on Corporate Fraud Detection Effectiveness: Evidence from External Auditors in Sri Lanka', 34],
+          ['The Role of Financial Crime Detection Mechanisms in Commercial Banks in Sri Lanka', 35],
+        ] },
+        { no: 'III', name: 'Ethics, Governance and Risk Management', topics: [
+          ['Determinants of Workers\' Remittances in Sri Lanka: a Pre and Post 2022 Economic Crisis Comparative Analysis', 37],
+          ['The Impact of Financial Management Practices on the Financial Performance of Commercial Banks in Sri Lanka: The Moderating Role of Corporate Governance', 38],
+          ['The Moderating Effect of Intellectual Capital on the Relationship between Corporate Governance and Financial Performance, Evidence from Non-Financial Listed Companies in Sri Lanka', 39],
+          ['The Impact of Sustainability Reporting on Corporate Financial Performance with the Moderating Effect of Corporate Governance: Evidence from the Banking Sector of Sri Lanka', 40],
+          ['The Role of FinTech Automation in Corporate Cash Flow Management: Evidence from Finance Companies in the Western Province of Sri Lanka', 41],
+          ['Impact of Macroeconomic Factors Affecting Foreign Institutional Investment in The Colombo Stock Exchange', 42],
+          ['Evaluating the Adapted Opening Range Breakout (AORB) Strategy Across Selected Financial Assets: Evidence from the London–New York Overlap Session', 43],
+          ['The Impact of Financial Literacy on Cryptocurrency Adoption Behaviour among Accounting and Finance Undergraduates in Colombo District, Sri Lanka: The Moderating Effect of Financial Risk Tolerance', 44],
+        ] },
+        { no: 'IV', name: 'Audit, Assurance and Taxation', topics: [
+          ['The Impact of Fairness and Transparency of the Tax System on Individual Tax Compliance Behaviour: The Moderating Role of Tax Awareness and Tax Knowledge among Sri Lankan Taxpayers', 46],
+          ['Application of International Auditing Standards in Maintaining Audit Quality in Small and Medium Enterprises in Sri Lanka', 47],
+          ['The Impact of OECD Pillar Two on Corporate Tax Transparency of Consumer Goods Multinational Enterprises Operating in Emerging Asian Economies', 48],
+          ['The Impact of Modified Audit Opinion on Market Performance: Evidence from Listed Companies in Sri Lanka', 49],
+          ['The Impact of Audit Firm Characteristics on Financial Misstatement Detection in Sri Lankan Listed Companies', 50],
+          ['The Relationship between Job Stressors and Audit Quality Reduction Behavior among Entry-Level Audit Professionals in Sri Lanka', 51],
+          ['The Impact of Robotic Process Automation (RPA) on Transforming Audit Documentation and Reporting for Audit Firms in Colombo District, Sri Lanka', 52],
+          ['Impact of Sustainability Auditing on Audit Quality: Evidence From Sri Lankan Audit Firms', 53],
+        ] },
+        { no: 'V', name: 'Corporate Finance', topics: [
+          ['The Impact of Financial Media Exposure and Theory of Planned Behaviour Determinants on Stock Market Participation Intention: Evidence from Accounting and Finance Undergraduates in Western Province, Sri Lanka', 55],
+          ['The Impact of Financial Literacy on Savings Behaviour of Undergraduates: The Mediating Role of Financial Attitude', 56],
+          ['The Impact of Buy-Now-Pay-Later Usage on Financial Stress among Young Professionals in Colombo District', 57],
+          ['The Impact of Financial Literacy on Personal Investment Decisions among Accounting Undergraduates in Non-State Higher Educational Institutes in Sri Lanka', 58],
+          ['Does Derivative Usage Impact the Firm Value of Sri Lankan Licensed Commercial Banks', 59],
+          ['The Influence of Financial Literacy and Psychosocial Factors on Entrepreneurial Intention among Accounting Undergraduates in Sri Lanka', 60],
+          ['The Impact of Fintech Literacy on Personal Financial Decision-Making of Financial Professionals in Colombo District, Sri Lanka', 61],
+          ['The Impact of FinTech on Financial Inclusion in the Banking Sector: Evidence from Sri Lanka', 62],
+          ['The Impact of Financial Literacy Level on Personal Financial Management among Undergraduates at the State Universities in Sri Lanka', 63],
+          ['Behavioural Biases and Investment Decisions among Investors in Sri Lanka: The Moderating Role of Financial Literacy and the Mediating Role of AI Use', 64],
+          ['The Impact of Economic Uncertainty on Capital Investment Decisions of Sri Lankan Listed Manufacturing Firms', 65],
+        ] },
+        { no: 'VI', name: 'Sustainability and ESG', topics: [
+          ['Preparers’ Perspectives on Mandatory Sustainability Disclosures in Sri Lankan Listed Companies', 67],
+          ['The Impact of ESG Disclosures on Financial Performance of Non-Financial Listed Companies in Sri Lanka', 68],
+          ['The Impact of Sustainability Disclosure Standards on Company Financial Performance: Evidence from Listed Textile Companies in South Asia', 69],
+          ['Impact of ESG Reporting on Financial Performance: The Moderating Role of the Corporate Life Cycle of Listed Companies in Sri Lanka', 70],
+          ['Relationship between Sustainability Reporting and Financial Performance: Evidence from Licensed Commercial Banks in Sri Lanka', 71],
+          ['Impact of ESG Reporting on Financial Performance: The Moderating Role of Leverage and Stock Price Volatility in Colombo Stock Exchange Listed Companies', 72],
+          ['The Impact of Environmental, Social and Governance Initiatives on Firm Performance: The Moderating Role of Technology Innovation in Consumer Sector Firms Listed on the Colombo Stock Exchange, Sri Lanka', 73],
+          ['The Relationship between Sustainability Practices and Financial Performance in the Hotel Industry: Evidence from PLC Hotels in Colombo District, Sri Lanka', 74],
+          ['Stock Price Reactions to Green Bond Issuance Announcements: Evidence from Asian Capital Markets', 75],
+        ] },
+        { no: 'VII', name: 'Management Accounting', topics: [
+          ['AI and Automation in Management Controls: Transforming Variance Reporting and Internal Performance Monitoring', 77],
+          ['The Impact of Green Accounting Practices on Cost Reduction in Large-Scale Apparel Manufacturing Companies in Western Province of Sri Lanka', 78],
+          ['The Impact of Digital Transformation of Management Accounting Practices on Sustainable Performance of the Apparel Industry in Sri Lanka', 79],
+          ['The Impact of Lean Manufacturing Tools on Enhancing Product Quality: The Moderating Effect of Employee Motivation in Large-Scale Apparel Manufacturing Companies in Colombo District, Sri Lanka', 80],
+          ['The Role of Financial Awareness in Shaping Budgeting Behaviour: A Comparative Study of State and Non-State Management Undergraduates in Colombo District, Sri Lanka', 81],
+          ['The Relationship between Artificial Intelligence Adoption and Cost Efficiency in Manufacturing Organisations in Sri Lanka', 82],
+          ['Exploring the Effectiveness of Time Budgeting Practices at ABC Sri Lanka', 83],
+          ['The Impact of ISO 14001 Certification on the Financial Performance of ISO 14001-Certified Listed Companies in the GICS Materials Industry Group of the Colombo Stock Exchange', 84],
+          ['The Impact of Digital Financial Services on Stock Market Participation among Undergraduates in Sri Lanka', 85],
+          ['The Impact of Digital Analytical Tools Adoption on Management Accounting Practices and Decision-Making Effectiveness among Finance Professionals in Sri Lanka', 86],
+          ['Budget Fairness as a Mediating Factor between Budget Participation and Organisational Performance: Evidence from Listed Manufacturing Companies in Sri Lanka', 87],
+        ] },
+        { no: 'VIII', name: 'Data Analytics and Digital Transformation', topics: [
+          ['Queue Simulation Analysis to Improve Customer Service Efficiency at a Bubble Tea and Ice Cream Company in Sri Lanka: An Arena Simulation Approach', 89],
+          ['Gen Z Workplace Expectations in Sri Lanka: A Gap Analysis of Gen Z Expectations and Professionals’ Perceptions', 90],
+          ['Impact of Digital Transformation on Job Roles of Accounting Professionals: Evidence from Undergraduates in Sri Lanka', 91],
+          ['Determinants of Data Analytics Adoption among Small and Medium Enterprises in Sri Lanka: An Empirical Investigation of Drivers and Barriers', 92],
+          ['The Impact of Generative AI Tool Usage on Operational Effectiveness of Accounting-Based BPO Companies Sri Lanka: The Moderating Role of Organizational AI Adaptation Readiness', 93],
+          ['An Investigation into the Barriers to Quitting Alcohol Consumption among Adults: A Descriptive Analysis', 94],
+          ['Data-Driven Strategies to Enhance Consumer Purchase Intention for a Fast-Moving Consumer Brand in Sri Lanka', 95],
+          ['The Gap Between Career Expectations and Employment Outcomes Among Fresh Graduates in Sri Lanka', 96],
+          ['Factors Affecting Mental Health and Stress Among Young Adults in Sri Lanka and Their Impact; Descriptive Analytics & Data Management', 97],
+          ['Evaluating Checkout Queue Dynamics and Operational Efficiency in Retail Cashier Systems: A Discrete Event Simulation', 98],
+          ['The Impact of Infrastructure Disruptions on Students’ Academic Performance in Sri Lanka: A Descriptive Analysis', 99],
+          ['Optimizing railway ticket counter operations using discrete event simulation: The case study of Bambalapitiya Railway Station', 100],
+          ['Optimizing Queue Performance in a Fast-Food Outlet: An Arena Simulation Approach', 101],
+          ['Brand health audit of Dash Gliz dishwashing liquid: A data-driven approach to consumer insights and market positioning', 102],
+        ] },
+        { no: 'IX', name: 'Contemporary Issues in Accounting', topics: [
+          ['Misclassification of Leased-Out Properties as Right-of-Use Assets: Ensuring Accurate Financial Reporting under SLFRS 16 and LKAS 40', 104],
+          ['Ensuring Accurate Vendor Payments through Proper Validation of Vendor Bank Details in Accounts Payable', 105],
+          ['Foreign Currency Accounting under LKAS 21 in Accounts Payable: Gaps and Recommended Improvements; Evidence from a Business Process Management Organization', 106],
+          ['Absence of an Expected Credit Loss Provisioning Methodology for Trade Debtors: Ensuring Accurate Financial Reporting under SLFRS 9', 107],
+          ['Incorrect Lease Term Used in Measuring Lease Liability Under SLFRS 16', 108],
+          ['Ensuring Reliable Fair Value Measurement of Investment Property: An Audit Perspective', 109],
+          ['Late VAT Tax Invoices and the Integrity of Financial Reporting', 110],
+          ['Ensuring Accurate Payroll Processing through Effective Candidate Identification and Internal Controls', 111],
+          ['Ensuring Reliable Financial Reporting through Fair Value Recognition of Free-of-Charge Property, Plant and Equipment', 112],
+          ['Ensuring True and Fair Financial Reporting through Proper Recognition of Foreign Exchange Gains and Losses', 113],
+        ] },
+        { no: 'X', name: 'Multidisciplinary Approaches', topics: [
+          ['The Impact of Accounting Information System on Organizational Performance: Evidence from Food Manufacturing Small and Medium Enterprises in Colombo District Sri Lanka', 115],
+          ['Impact of Work-life Balance on the Professional Development of Chartered Accountants in Sri Lanka: The Mediating Role of Psychological Well-being', 116],
+          ['Role Conflict, Role Ambiguity and Employee Job Performance: The Mediating Role of Job Satisfaction in Sri Lankan Licensed Commercial Banks', 117],
+          ['The Impact of Marketing Strategies on Financial Performance: A Study of Listed Hotels in Sri Lanka', 118],
+          ['Factors Impacting for Career Path Choice of Accounting Students in Sri Lanka with Special Reference to Colombo District', 119],
+          ['The impact of social media influence on herding behavior: the mediating role of Fear of Missing Out (FOMO) among retail investors of the Colombo Stock Exchange in Sri Lanka', 121],
+          ['Impact of Employability Skills on Career Adaptability of Accounting Graduates in Western Province of Sri Lanka', 122],
+          ['The impact of entrepreneurship education on entrepreneurial intention: with special reference to accounting undergraduates in Sri Lanka', 123],
+          ['The impact of emotional intelligence on the academic performance of accounting undergraduates in non-state higher education institutions in Sri Lanka', 124],
+          ['The Impact of Internship in Accounting on Subsequent Academic Performance in Sri Lankan Context', 125],
+        ] },
+      ],
+      // Back cover (fallback design — replaced by the PDF's back cover when it loads)
+      aboutLabel: 'SAB SRC 2026',
+      backQuote: '“Balance & Beyond: Re-imagining Business through Data and Sustainability”',
       blurb: [
-        'This handbook provides all the information on the various aspects of the Bachelor of Science (General/Honours) in Applied Accounting degree programme, and outlines the facilities provided by the SAB Campus, CA Sri Lanka.',
-        'It also provides a comprehensive guide to the by-laws and regulations that every registered student has agreed to abide by.',
+        'The Book of Abstracts of the SAB Students’ 5th Research Colloquium brings together student research across ten panels — from financial reporting, audit and taxation to sustainability, ESG, data analytics and digital transformation.',
+        'Organized by SAB Campus, The Institute of Chartered Accountants of Sri Lanka, 30th October 2026.',
       ],
-      // Fallback pages only (used when the PDF cannot be loaded)
+      // Fallback pages only (used when the PDF cannot be loaded) — the ten panels and their pages
       chapters: [
-        ['CA Sri Lanka', 5], ['SAB Campus', 8], ['The BSc Degree', 9], ['Programme Structure', 13],
-        ['Evaluation & Examination', 16], ['Continuous Assessments', 19], ['By-Laws', 21], ['Examination Regulations', 29],
-        ['Learning Environment', 33], ['Student Support & Welfare', 35], ['Financial Information', 38], ['Staff', 39],
+        ['Financial Reporting & Analysis', 22], ['Fraud & Forensic Accounting', 31], ['Ethics, Governance & Risk', 36],
+        ['Audit, Assurance & Taxation', 45], ['Corporate Finance', 54], ['Sustainability & ESG', 66],
+        ['Management Accounting', 76], ['Data Analytics & Digital', 88], ['Contemporary Issues', 103], ['Multidisciplinary', 114],
       ],
-      reviewsHeading: 'Vision · Mission · Aim',
+      reviewsHeading: 'Voices of the Colloquium',
       reviews: [
-        ['To be a leader in the accounting profession with a global footprint, promoting relevance and excellence.', 'Vision'],
-        ['Adding value to business and economy by setting standards in financial reporting and auditing.', 'Mission'],
-        ['To produce employable graduates who are technically competent and highly skilled in contemporary accounting practice.', 'Degree Objective'],
+        ['Numbers tell us what happened. Research tells us why, and what to do next.', 'Vice President, CA Sri Lanka'],
+        ['Balance is the skill, and going beyond is the ambition.', 'Vice President, CA Sri Lanka'],
+        ['Research asks for patience, honesty and courage.', 'Colloquium Chair'],
       ],
     };
     const titleOneLine = CONFIG.title.replace(/\n/g, ' ');
@@ -831,8 +1138,16 @@
     const introEl = $('intro'), launchBtn = $('launchBtn'), countEl = $('countdown'), flashEl = $('flash');
     const capEl = $('caption'), capEyebrow = $('capEyebrow'), capTitle = $('capTitle'), progressEl = $('progress');
     const finaleEl = $('finale'), headEl = $('finHead'), cardEl = $('qrCard'), panelEl = $('finPanel');
-    $('introEyebrow').textContent = `Official Launch · ${CONFIG.launchDate}`;
-    $('introSub').innerHTML = `Join us for the launch of the <em style="font-family:var(--serif);color:var(--ink)">${titleOneLine}</em> — ${CONFIG.subtitle}, ${CONFIG.author}.`;
+    $('introEyebrow').textContent = CONFIG.event || `Official Launch · ${CONFIG.launchDate}`;
+    $('introKicker').textContent = `The official launch of the ${titleOneLine}`;
+    if (CONFIG.headline) { $('hl1').textContent = CONFIG.headline[0]; $('hl2').textContent = CONFIG.headline[1]; }
+    $('introTheme').textContent = CONFIG.theme || CONFIG.subtitle;
+    $('metaDate').textContent = CONFIG.launchDate;
+    $('metaPub').textContent = `${CONFIG.coverTag} · ${titleOneLine}`;
+    $('metaOrg').textContent = CONFIG.author;
+    $('footLeft').textContent = CONFIG.publisherLong || CONFIG.publisher;
+    $('footRight').textContent = `${CONFIG.coverTag} · Official Digital Launch`;
+    const setLaunchLabel = (t) => { launchBtn.querySelector('.launch-label').textContent = t; };
     $('finTitle').innerHTML = `<em class="gold-text">${titleOneLine}</em>`;
     $('finAuthor').textContent = `${CONFIG.subtitle} · ${CONFIG.author}`;
     $('qrUrl').textContent = CONFIG.qrUrl.replace(/^https?:\/\//, '');
@@ -873,7 +1188,10 @@
         const g = this.ctx.createGain(); this.env(g, t, .01, gain, dur);
         o.connect(g).connect(this.out); o.start(t); o.stop(t + dur + .05);
       },
-      tick(n) { this.tone(n === 1 ? 880 : 660, .5, .18); this.tone(n === 1 ? 1760 : 1320, .3, .05); },
+      tick(n) {   // pitch climbs as the countdown nears 1, building tension
+        const f = n === 1 ? 880 : 520 + Math.max(0, 10 - n) * 28;
+        this.tone(f, .5, .18); this.tone(f * 2, .3, .05);
+      },
       boom() { this.tone(110, 1.6, .9, 'sine', 0, 32); this.noise({ dur: 1.4, type: 'lowpass', f0: 900, f1: 80, gain: .6 }); this.noise({ dur: 2.4, f0: 400, f1: 5000, q: .6, gain: .18, attack: .3 }); },
       whoosh(g = .3) { this.noise({ dur: 1.1, f0: 300, f1: 2400, q: .7, gain: g, attack: .35 }); },
       flip(g = .35) { this.noise({ dur: .45, f0: 2600, f1: 700, q: .9, gain: g, attack: .06 }); },
@@ -917,7 +1235,8 @@
     // lights
     // Lights that hit the front of the book are neutral white; a soft gold light only rims it from behind.
     scene.add(new THREE.HemisphereLight(0xffffff, 0x1a1418, .45));
-    const key = new THREE.SpotLight(0xffffff, 2.2, 0, Math.PI / 4.5, .9, 0);
+    const KEY_ON = 2.2, KEY_IDLE = .55;   // stage stays dim before launch, lights come up for the reveal
+    const key = new THREE.SpotLight(0xffffff, KEY_IDLE, 0, Math.PI / 4.5, .9, 0);
     key.position.set(4, 8, 10); key.castShadow = true;
     key.shadow.mapSize.set(1024, 1024); key.shadow.bias = -.0004; key.shadow.radius = 6;
     scene.add(key, key.target);
@@ -975,7 +1294,9 @@
     /* ==========================================================================
        Book dimensions
        ========================================================================== */
-    const W = 3, H = 4.24, LEAVES = 5, GAP = .0045, BLOCK = .3, CT = .05, OVER = .06, SEG = 44, CURL = .85;
+    // number of turnable leaves follows the preview page list (2 pages per leaf + 1 on the page block)
+    const LEAVES = Math.max(1, Math.floor(((CONFIG.pdfPages?.sides?.length || 11) - 1) / 2)), BLOCK_SIDE = LEAVES * 2;
+    const W = 3, H = 4.24, GAP = .0045, BLOCK = .3, CT = .05, OVER = .06, SEG = 44, CURL = .85;
     const CW = 1024, CH = Math.round(1024 * (H + 2 * OVER) / (W + OVER));
     const PW = 1024, PH = Math.round(1024 * H / W);
 
@@ -1042,8 +1363,10 @@
       ctx.fillStyle = '#111'; let x = w - 325;
       while (x < w - 135) { const bw = 2 + (Math.random() * 4 | 0); ctx.fillRect(x, h - 228, bw, 84); x += bw + 2 + (Math.random() * 4 | 0); }
     }
-    function drawSpine(ctx, w, h) {
+    function drawSpine(ctx, w, h, coverImg) {
       ctx.fillStyle = '#0d1734'; ctx.fillRect(0, 0, w, h);
+      // with a PDF cover, the spine continues the cover's own colours (its left-edge strip)
+      if (coverImg) ctx.drawImage(coverImg, 0, 0, coverImg.width * .05, coverImg.height, 0, 0, w, h);
       const GOLD = goldGrad(ctx, 0, 0, 0, h);
       ctx.fillStyle = GOLD; ctx.fillRect(0, 70, w, 4); ctx.fillRect(0, h - 74, w, 4);
       ctx.save(); ctx.translate(w / 2, h / 2); ctx.rotate(Math.PI / 2);
@@ -1060,13 +1383,6 @@
         const ox = (y / s) % 2 ? s / 2 : 0;
         ctx.beginPath(); ctx.moveTo(x + ox, y - s / 2); ctx.lineTo(x + ox + s / 2, y); ctx.lineTo(x + ox, y + s / 2); ctx.lineTo(x + ox - s / 2, y); ctx.closePath(); ctx.stroke();
       }
-      ctx.fillStyle = '#f5efe2'; const bw = 460, bh = 300, bx = (w - bw) / 2, by = h / 2 - bh / 2;
-      ctx.beginPath(); ctx.roundRect(bx, by, bw, bh, 18); ctx.fill();
-      ctx.strokeStyle = '#b48838'; ctx.lineWidth = 2; ctx.beginPath(); ctx.roundRect(bx + 14, by + 14, bw - 28, bh - 28, 10); ctx.stroke();
-      ctx.fillStyle = '#9a7432'; ctx.textAlign = 'center';
-      ctx.font = `italic 500 58px ${FONT.serif}`; ctx.fillText('Ex Libris', w / 2, by + 110);
-      ctx.fillStyle = '#5a4a36'; ctx.font = `400 28px ${FONT.body}`; ctx.fillText('This book belongs to', w / 2, by + 170);
-      ctx.strokeStyle = '#b8a888'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(bx + 70, by + 240); ctx.lineTo(bx + bw - 70, by + 240); ctx.stroke();
     }
 
     /* ---------- interior pages ---------- */
@@ -1316,7 +1632,9 @@
       const endC = mkCanvas(CW, CH); drawEndpaper(endC.getContext('2d'), CW, CH);
       const endMat = new THREE.MeshStandardMaterial({ map: tex(endC), roughness: .7 });
       const backC = mkCanvas(CW, CH); drawBack(backC.getContext('2d'), CW, CH);
-      const backMat = new THREE.MeshPhysicalMaterial({ map: tex(backC), roughness: .45, metalness: .15, clearcoat: .3, envMapIntensity: 1.2 });
+      const backMap = tex(backC);
+      const backMat = new THREE.MeshPhysicalMaterial({ map: backMap, roughness: .45, metalness: .15, clearcoat: .3, envMapIntensity: 1.2, emissive: 0xffffff, emissiveMap: backMap, emissiveIntensity: .15 });
+      Object.assign(book, { edgeMat: navy, backCanvas: backC, backMat });
 
       const coverGeo = new THREE.BoxGeometry(W + OVER, H + 2 * OVER, CT);
 
@@ -1329,7 +1647,7 @@
       const sideV = new THREE.MeshStandardMaterial({ map: eV, roughness: .9 }), sideH = new THREE.MeshStandardMaterial({ map: eH, roughness: .9 });
       const blockC = mkCanvas(PW, PH); PAGES[10](blockC.getContext('2d'));
       const blockTop = pageMaterial(tex(blockC), THREE.FrontSide);
-      book.sides[10] = { canvas: blockC, mat: blockTop };
+      book.sides[BLOCK_SIDE] = { canvas: blockC, mat: blockTop };
       const block = new THREE.Mesh(new THREE.BoxGeometry(W - .01, H, BLOCK), [sideV, sideV, sideH, sideH, blockTop, sideV]);
       block.position.set(W / 2, 0, -BLOCK / 2); block.castShadow = true; bookGroup.add(block);
 
@@ -1337,6 +1655,7 @@
       const zTop = (LEAVES + 1) * GAP + CT, zBot = -BLOCK - CT;
       const sc = mkCanvas(160, 2048); drawSpine(sc.getContext('2d'), 160, 2048);
       const spineMat = new THREE.MeshPhysicalMaterial({ map: tex(sc), roughness: .45, metalness: .3, clearcoat: .3 });
+      Object.assign(book, { spineCanvas: sc, spineMat });
       const spine = new THREE.Mesh(new THREE.BoxGeometry(CT, H + 2 * OVER, zTop - zBot), [navy, spineMat, navy, navy, navy, navy]);
       spine.position.set(-CT / 2, 0, (zTop + zBot) / 2); spine.castShadow = true; bookGroup.add(spine);
 
@@ -1344,7 +1663,8 @@
       for (let i = 0; i < LEAVES; i++) {
         const geo = new THREE.PlaneGeometry(W, H, SEG, 1);
         const mk = (idx, left) => {
-          const c = mkCanvas(PW, PH); PAGES[idx](c.getContext('2d'));
+          // designed fallback page (shown only until the real book pages are applied)
+          const c = mkCanvas(PW, PH); (idx < 10 ? PAGES[idx] : PAGES[left ? 5 : 6])(c.getContext('2d'));
           const t = tex(c);
           if (left) { t.wrapS = THREE.RepeatWrapping; t.repeat.x = -1; t.offset.x = 1; }
           const m = pageMaterial(t, left ? THREE.BackSide : THREE.FrontSide);
@@ -1397,7 +1717,7 @@
     })();
 
     const FLOOR_Y = -3.4;
-    const floor = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), new THREE.MeshStandardMaterial({ color: 0x0a0c13, roughness: .5, metalness: .4 }));
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), new THREE.MeshStandardMaterial({ color: 0x07080d, roughness: .92, metalness: 0, envMapIntensity: .1 }));   // matte dark stage floor, no grey haze
     floor.rotation.x = -Math.PI / 2; floor.position.y = FLOOR_Y; floor.receiveShadow = true; scene.add(floor);
 
     function radialTex(stops) {
@@ -1549,12 +1869,15 @@
        Camera framing (aspect-aware)
        ========================================================================== */
     const FR = {
-      intro: { w: 10, h: 8.6, y: -.7 },
+      intro: { w: 10, h: 8.6, y: -.3 },
       closed: { w: W + 2, h: H + 2.9, y: .4 },   // leaves room above the book for the caption
       open: { w: 2 * W + .6, h: H + 1.9, y: .3 },
       final: { w: 7, h: 10, y: 0 },
     };
-    const frame = { ...FR.intro };
+    // On tall phone screens the camera sits further back, so aim higher to keep the floor ring
+    // below the launch button instead of behind the text.
+    const introFrame = () => ({ ...FR.intro, y: camera.aspect < .8 ? 2.6 : FR.intro.y });
+    const frame = introFrame();
     function fitDistance(w, h) {
       const t = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
       return Math.max(h / (2 * t), w / (2 * t * camera.aspect));
@@ -1629,13 +1952,16 @@
       state.phase = 'running'; Sfx.init();
       const tl = master = gsap.timeline();
       tl.to(introEl, { autoAlpha: 0, y: -24, duration: .6, ease: 'power2.in' }, 0);
-      tl.to(frame, { ...FR.intro, y: -1.2, h: 7.6, duration: 3, ease: 'power1.inOut' }, 0);
-      tl.to(portalU, { charge: 1, duration: 3, ease: 'power2.in' }, .2);
-      tl.call(() => Sfx.whoosh(.18), null, .4);
-      [3, 2, 1].forEach((n, i) => tl.call(() => showCount(n), null, .6 + i * .95));
+      // countdown: N … 1, one number per second, then ignition
+      const N = Math.max(1, CONFIG.countdown || 3), STEP = 1, C0 = .6;
+      const T = C0 + N * STEP;
+      tl.to(frame, { ...FR.intro, y: -1.2, h: 7.6, duration: T - .4, ease: 'power1.inOut' }, 0);
+      tl.to(portalU, { charge: 1, duration: T - .4, ease: 'power2.in' }, .2);
+      tl.call(() => Sfx.whoosh(.18), null, Math.max(.4, T - 3));
+      for (let i = 0; i < N; i++) { const n = N - i; tl.call(() => showCount(n), null, C0 + i * STEP); }
 
-      const T = 3.5;
       tl.call(ignite, null, T);
+      tl.to(key, { intensity: KEY_ON, duration: 1.4, ease: 'power2.out' }, T);
       tl.set(bookRoot, { visible: true }, T);
       tl.fromTo(bookRoot.position, { y: -7.5 }, { y: 0, duration: 2.8, ease: 'expo.out' }, T);
       tl.fromTo(bookRoot.rotation, { x: .5, y: -Math.PI * 2, z: .15 }, { x: 0, y: 0, z: 0, duration: 3.6, ease: 'power3.out' }, T);
@@ -1655,12 +1981,13 @@
       tl.to(frame, { ...FR.open, duration: 1.8, ease: 'power2.inOut' }, O);
       tl.call(() => spreadCaption(0), null, O + 1.1);
 
-      let t = O + 1.8 + 2.1;
+      const HOLD = CONFIG.pageHold || 2.1;   // seconds each open spread stays on screen
+      let t = O + 1.8 + HOLD;
       for (let i = 0; i < LEAVES; i++) {
         tl.call(() => Sfx.flip(), null, t);
         tl.to(book.leaves[i], { p: 1, duration: 1.35, ease: 'power2.inOut' }, t);
         tl.call(() => spreadCaption(i + 1), null, t + .75);
-        t += 1.35 + 2.1;
+        t += 1.35 + HOLD;
       }
 
       // close the book with a fanned cascade
@@ -1728,8 +2055,9 @@
       finaleEl.classList.remove('show'); cardEl.classList.remove('scanning');
       gsap.set([headEl, cardEl], { autoAlpha: 0 }); gsap.set([capEl, progressEl], { opacity: 0 });
       confetti.on = false; portalU.charge = .15; beam.material.uniforms.uOpacity.value = 0;
+      gsap.killTweensOf(key); key.intensity = KEY_IDLE;
       portal.position.x = 0; portal.scale.setScalar(1);   // oval back to centre stage for a replay
-      Object.assign(frame, FR.intro);
+      Object.assign(frame, introFrame());
       state.phase = 'idle';
     }
 
@@ -1742,6 +2070,133 @@
     /* ==========================================================================
        PDF support — renders your real pages onto the book (pdf.js)
        ========================================================================== */
+    // Put the book's real cover artwork on the 3D book: front (no foil, true colours), spine and
+    // cover edges in the cover's colours, and the back cover. Used by the embedded covers and the PDF.
+    function applyCovers(front, back) {
+      const coverFit = (c, im) => {
+        const x = c.getContext('2d'), s = Math.max(CW / im.width, CH / im.height);
+        x.fillStyle = '#0e1836'; x.fillRect(0, 0, CW, CH);
+        x.drawImage(im, (CW - im.width * s) / 2, (CH - im.height * s) / 2, im.width * s, im.height * s);
+      };
+      if (front) {
+        coverFit(book.coverCanvas, front);
+        const pc = book.coverPbr.getContext('2d'); pc.fillStyle = 'rgb(0,120,0)'; pc.fillRect(0, 0, CW, CH);
+        book.coverMat.map.needsUpdate = true; book.coverMat.metalnessMap.needsUpdate = true;
+        book.coverMat.emissiveIntensity = .55; book.coverMat.clearcoat = .08;   // printed cover: true colours, little glare
+        drawSpine(book.spineCanvas.getContext('2d'), book.spineCanvas.width, book.spineCanvas.height, front);
+        book.spineMat.map.needsUpdate = true;
+        const px = mkCanvas(1, 1), pxc = px.getContext('2d'); pxc.drawImage(front, 0, 0, front.width * .05, front.height, 0, 0, 1, 1);
+        const [r, g, b] = pxc.getImageData(0, 0, 1, 1).data;
+        book.edgeMat.color.setRGB(r / 255, g / 255, b / 255, THREE.SRGBColorSpace);
+      }
+      if (back) {
+        coverFit(book.backCanvas, back);
+        book.backMat.map.needsUpdate = true; book.backMat.emissiveIntensity = .5; book.backMat.clearcoat = .08;
+      }
+    }
+    // Put a real book page (image/canvas) on preview side i: paper margin, page, gutter shadow.
+    function applyPage(i, pimg) {
+      const side = book.sides[i], left = i % 2 === 1 && i !== BLOCK_SIDE;
+      // drawn at 1.5× resolution so the book's small text stays legible
+      const HR = 1.5, big = mkCanvas(Math.round(PW * HR), Math.round(PH * HR)), c = big.getContext('2d');
+      c.scale(HR, HR); c.imageSmoothingQuality = 'high';
+      paper(c, left);
+      const k = Math.min((PW - 40) / pimg.width, (PH - 40) / pimg.height), w = pimg.width * k, h = pimg.height * k;
+      c.drawImage(pimg, (PW - w) / 2, (PH - h) / 2, w, h);
+      const gx = left ? PW : 0, g = c.createLinearGradient(gx, 0, left ? PW - 110 : 110, 0);
+      g.addColorStop(0, 'rgba(60,40,20,.18)'); g.addColorStop(1, 'rgba(60,40,20,0)'); c.fillStyle = g; c.fillRect(0, 0, PW, PH);
+      setSideCanvas(i, big);
+    }
+    function setSideCanvas(i, big) {
+      const side = book.sides[i], old = side.mat.map, nt = tex(big);
+      nt.wrapS = old.wrapS; nt.repeat.copy(old.repeat); nt.offset.copy(old.offset);
+      side.mat.map = nt; side.mat.emissiveMap = nt; side.mat.needsUpdate = true; side.canvas = big; old.dispose();
+    }
+
+    function wrapLines(ctx, text, maxW) {
+      const lines = []; let line = '';
+      for (const word of text.split(/\s+/)) {
+        const test = line ? line + ' ' + word : word;
+        if (line && ctx.measureText(test).width > maxW) { lines.push(line); line = word; } else line = test;
+      }
+      if (line) lines.push(line);
+      return lines;
+    }
+
+    // A designed page for one panel: its number, its name and every research topic with its page number.
+    function drawPanelPage(ctx, panel, left) {
+      paper(ctx, left);
+      const x0 = MX - 10, x1 = PW - MX + 10, w = x1 - x0;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+      ctx.fillStyle = '#8a7a64'; ctx.font = `500 15px ${FONT.sans}`; spacing(ctx, 6);
+      ctx.fillText(`${CONFIG.coverTag} · ${titleOneLine}`.toUpperCase(), PW / 2, 84); spacing(ctx, 0);
+
+      // panel label + name
+      ctx.fillStyle = ACCENT; ctx.font = `600 19px ${FONT.sans}`; spacing(ctx, 10);
+      ctx.fillText(`PANEL ${panel.no}`, PW / 2, 150); spacing(ctx, 0);
+      let ns = 54, nameLines;
+      do { ctx.font = `400 ${ns}px ${FONT.serif}`; nameLines = wrapLines(ctx, panel.name, w - 60); ns -= 2; } while (nameLines.length > 2 && ns > 34);
+      ctx.fillStyle = INK; let y = 150 + ns * 1.25;
+      nameLines.forEach(l => { ctx.fillText(l, PW / 2, y); y += ns * 1.12; });
+      divider(ctx, PW / 2, y - ns * .3 + 14, 80, ACCENT);
+      y += 34;
+
+      // topics, auto-sized so the whole list fits on the page
+      const top = y, bottom = PH - 112, numW = 58, pageW = 58, tw = w - numW - pageW;
+      let f = 30, layout;
+      const measure = (size) => {
+        ctx.font = `400 ${size}px ${FONT.body}`;
+        const items = panel.topics.map(([t]) => wrapLines(ctx, t, tw));
+        const lh = size * 1.22, gap = size * .62;
+        const h = items.reduce((s, ls) => s + ls.length * lh, 0) + gap * (items.length - 1);
+        return { items, lh, gap, h, size };
+      };
+      do { layout = measure(f); f -= .5; } while (layout.h > bottom - top && f > 14);
+      const { items, lh, gap, size } = layout;
+      y = top + Math.min(40, Math.max(0, (bottom - top - layout.h) / 2)) + size;   // short lists sit under the title
+      items.forEach((ls, k) => {
+        ctx.textAlign = 'left'; ctx.fillStyle = ACCENT; ctx.font = `italic 500 ${size * 1.05}px ${FONT.serif}`;
+        ctx.fillText(String(k + 1).padStart(2, '0'), x0, y);
+        ctx.fillStyle = INK; ctx.font = `400 ${size}px ${FONT.body}`;
+        ls.forEach((l, j) => ctx.fillText(l, x0 + numW, y + j * lh));
+        ctx.textAlign = 'right'; ctx.fillStyle = '#8a7a64'; ctx.font = `500 ${size * .8}px ${FONT.sans}`;
+        ctx.fillText(String(panel.topics[k][1]), x1, y + (ls.length - 1) * lh);
+        y += ls.length * lh + gap;
+        if (k < items.length - 1) {
+          ctx.fillStyle = 'rgba(154,116,50,.18)'; ctx.fillRect(x0 + numW, y - gap * .5 - size * .85, tw + pageW, 1);
+        }
+      });
+
+      ctx.textAlign = 'center'; ctx.fillStyle = ACCENT; ctx.font = `500 15px ${FONT.sans}`; spacing(ctx, 7);
+      ctx.fillText(`${panel.topics.length} RESEARCH PAPERS`, PW / 2, PH - 62); spacing(ctx, 0);
+    }
+    function applyPanelPages() {
+      (CONFIG.pdfPages?.sides || []).forEach((tok, i) => {
+        const m = /^P(\d+)$/.exec(tok), panel = m && CONFIG.panels?.[m[1] - 1];
+        if (!panel || i >= book.sides.length) return;
+        const HR = 1.5, big = mkCanvas(Math.round(PW * HR), Math.round(PH * HR)), c = big.getContext('2d');
+        c.scale(HR, HR);
+        drawPanelPage(c, panel, i % 2 === 1 && i !== BLOCK_SIDE);
+        setSideCanvas(i, big);
+      });
+    }
+
+    const loadImg = (u) => u ? new Promise(res => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = u; }) : null;
+    async function applyEmbeddedCovers() {
+      const src = window.BOOK_COVERS; if (!src) return;
+      const [front, back] = await Promise.all([loadImg(src.front), loadImg(src.back)]);
+      applyCovers(front, back);
+    }
+    // Real pages from book.pdf, embedded in book-pages.js, so the turning pages always match the book.
+    // Returns true when every preview page was filled.
+    async function applyEmbeddedPages() {
+      const src = window.BOOK_PAGES; if (!src || !src.length) return false;
+      const imgs = await Promise.all(src.map(loadImg));
+      imgs.forEach((im, i) => { if (im && i < book.sides.length) applyPage(i, im); });
+      // complete when every numbered PDF page in the list has its image (designed panel pages don't need one)
+      return (CONFIG.pdfPages?.sides || []).every((tok, i) => typeof tok !== 'number' || imgs[i]);
+    }
+
     function loadScript(src) { return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); }
     async function loadPdf(source, name) {
       try {
@@ -1756,29 +2211,14 @@
           const c = mkCanvas(Math.round(vp.width), Math.round(vp.height));
           await page.render({ canvasContext: c.getContext('2d'), viewport: vp }).promise; return c;
         };
-        // cover = page 1 (cover-fit, no foil)
-        const img = await render(1), ctx = book.coverCanvas.getContext('2d');
-        const s = Math.max(CW / img.width, CH / img.height);
-        ctx.fillStyle = '#0e1836'; ctx.fillRect(0, 0, CW, CH);
-        ctx.drawImage(img, (CW - img.width * s) / 2, (CH - img.height * s) / 2, img.width * s, img.height * s);
-        const pc = book.coverPbr.getContext('2d'); pc.fillStyle = 'rgb(0,120,0)'; pc.fillRect(0, 0, CW, CH);
-        book.coverMat.map.needsUpdate = true; book.coverMat.metalnessMap.needsUpdate = true;
-        book.coverMat.emissiveIntensity = .55; book.coverMat.clearcoat = .08;   // printed cover: true colours, little glare
-        // interior: pages 2..12
+        const PP = CONFIG.pdfPages || {};
+        const backN = PP.back || doc.numPages;
+        applyCovers(await render(PP.cover || 1), backN > 1 && backN <= doc.numPages ? await render(backN) : null);
+        // interior pages
+        const sides = PP.sides || book.sides.map((_, i) => i + 2);
         for (let i = 0; i < book.sides.length; i++) {
-          const n = i + 2; if (n > doc.numPages) break;
-          const pimg = await render(n), side = book.sides[i], left = i % 2 === 1 && i !== 10;
-          // re-draw at 1.5× resolution so the handbook's small text stays legible
-          const HR = 1.5, big = mkCanvas(Math.round(PW * HR), Math.round(PH * HR)), c = big.getContext('2d');
-          c.scale(HR, HR); c.imageSmoothingQuality = 'high';
-          paper(c, left);
-          const k = Math.min((PW - 40) / pimg.width, (PH - 40) / pimg.height), w = pimg.width * k, h = pimg.height * k;
-          c.drawImage(pimg, (PW - w) / 2, (PH - h) / 2, w, h);
-          const gx = left ? PW : 0, g = c.createLinearGradient(gx, 0, left ? PW - 110 : 110, 0);
-          g.addColorStop(0, 'rgba(60,40,20,.18)'); g.addColorStop(1, 'rgba(60,40,20,0)'); c.fillStyle = g; c.fillRect(0, 0, PW, PH);
-          const old = side.mat.map, nt = tex(big);
-          nt.wrapS = old.wrapS; nt.repeat.copy(old.repeat); nt.offset.copy(old.offset);
-          side.mat.map = nt; side.mat.emissiveMap = nt; side.mat.needsUpdate = true; side.canvas = big; old.dispose();
+          const n = sides[i]; if (typeof n !== 'number' || n > doc.numPages) continue;
+          applyPage(i, await render(n));
         }
         pdfLoaded = true; toast(`Loaded “${name || source}” · ${doc.numPages} pages`);
         if (!CONFIG.downloadUrl && typeof source === 'string') $('dlBtn').href = source;
@@ -1862,6 +2302,7 @@
       renderer.setSize(innerWidth, innerHeight);
       PIXEL.value = renderer.getPixelRatio();
       renderer.render(scene, camera);   // resizing clears the canvas — redraw now so there's no black frame
+      if (state.phase === 'idle') Object.assign(frame, introFrame());
       if (state.phase === 'final') { const pl = placement(); bookRoot.position.x = pl.x; bookRoot.position.y = pl.y; bookRoot.scale.setScalar(pl.s); portal.position.x = pl.x; portal.scale.setScalar(pl.s); }
     });
 
@@ -1874,12 +2315,16 @@
       new Promise(r => setTimeout(r, 3000)),
     ]);
     buildBook();
+    await applyEmbeddedCovers();   // real cover straight away, no PDF needed
+    const pagesReady = await applyEmbeddedPages();   // real turning pages, no PDF needed
+    if (pagesReady) pdfLoaded = true;
+    applyPanelPages();   // one designed page per panel with all its topics
     gsap.ticker.add(frameLoop);
     gsap.from(introEl.children, { opacity: 0, y: 24, duration: 1.2, stagger: .12, ease: 'expo.out' });
-    // Load the PDF *before* enabling launch, so page rendering never competes with the animation.
-    if (CONFIG.pdfUrl) await loadPdf(CONFIG.pdfUrl);
+    // No embedded pages? Load the PDF *before* enabling launch, so page rendering never competes with the animation.
+    if (CONFIG.pdfUrl && !pagesReady) await loadPdf(CONFIG.pdfUrl);
     warmUp();
-    launchBtn.disabled = false; launchBtn.textContent = 'Launch the Book';
+    launchBtn.disabled = false; setLaunchLabel('Launch the Book');
     state.phase = 'idle';
   </script>
 </body>

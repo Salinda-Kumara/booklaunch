@@ -191,6 +191,82 @@
       pointer-events: none
     }
 
+    /* launch-screen background picture (CONFIG.launchBackground) */
+    .intro-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 5;
+      pointer-events: none;
+      display: none;
+      background-color: #170a36;
+      background-size: cover;
+      background-position: center
+    }
+
+    .intro-bg::after {
+      /* soft dark fade at the bottom so the launch text and button read clearly */
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 52%, rgba(12, 4, 32, .55) 74%, rgba(8, 3, 22, .85) 100%)
+    }
+
+    body.with-bg .intro-bg {
+      display: block
+    }
+
+    /* the picture already carries the logos and the event title — keep only the launch details */
+    body.with-bg .intro {
+      justify-content: flex-end;
+      padding-bottom: clamp(80px, 15vh, 170px)
+    }
+
+    body.with-bg .intro-chip,
+    body.with-bg .intro h1,
+    body.with-bg .intro-theme,
+    body.with-bg .intro-rule,
+    body.with-bg .intro-meta,
+    body.with-bg .corner,
+    body.with-bg .intro-foot {
+      display: none
+    }
+
+    body.with-bg .intro-kicker {
+      margin: 0 0 clamp(12px, 2vh, 18px);
+      color: var(--gold-1);
+      font-size: clamp(17px, 1.7vw, 22px);
+      text-shadow: 0 2px 14px rgba(0, 0, 0, .6)
+    }
+
+    body.with-bg .intro-meta {
+      margin-bottom: clamp(18px, 3.4vh, 30px)
+    }
+
+    body.with-bg .intro-meta dt {
+      color: var(--gold-1)
+    }
+
+    body.with-bg .intro-meta dd,
+    body.with-bg .intro-meta dt {
+      text-shadow: 0 1px 10px rgba(0, 0, 0, .7)
+    }
+
+    /* top bar moves to the bottom corners so it never covers the picture's logos */
+    body.with-bg .topbar {
+      top: auto;
+      bottom: 0
+    }
+
+    @media (max-aspect-ratio: 1/1) {
+
+      /* portrait: show the whole picture at the top, launch details below it */
+      .intro-bg {
+        background-size: contain;
+        background-position: center top;
+        background-repeat: no-repeat
+      }
+    }
+
     /* invitation-style pre-launch screen */
     .intro-chip {
       display: inline-flex;
@@ -857,21 +933,8 @@
   <div class="vignette"></div>
   <div class="grain"></div>
 
-  <header class="topbar">
-    <div class="brand"><span class="dot"></span><span id="brandText">Official Book Launch</span></div>
-    <button id="muteBtn" class="icon-btn" aria-label="Toggle sound" title="Sound">
-      <svg id="icoOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
-        <path d="M4 9v6h4l5 4V5L8 9H4z" />
-        <path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" />
-      </svg>
-      <svg id="icoOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
-        style="display:none">
-        <path d="M4 9v6h4l5 4V5L8 9H4z" />
-        <path d="M17 9l5 6M22 9l-5 6" />
-      </svg>
-    </button>
-  </header>
 
+  <div id="introBg" class="intro-bg" aria-hidden="true"></div>
   <section id="intro" class="intro">
     <div class="intro-chip"><span class="dot"></span><span id="introEyebrow">Digital Edition · Premiere</span></div>
     <p class="intro-kicker" id="introKicker">The official launch of the</p>
@@ -915,17 +978,6 @@
       <div class="qr-info">
         <p class="eyebrow">Scan to read</p>
         <h3>Get your digital copy</h3>
-        <p class="url" id="qrUrl"></p>
-        <div class="actions">
-          <a id="dlBtn" class="btn primary" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-              <path d="M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 19h14" />
-            </svg>Download</a>
-          <button id="replayBtn" class="btn ghost">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-              <path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4h4" />
-            </svg>Replay</button>
-        </div>
       </div>
     </div>
     </div>
@@ -959,6 +1011,7 @@
       publisher: 'SAB Campus, CA Sri Lanka',
       coverTag: 'SAB SRC 2026',
       launchDate: '30th October 2026',
+      launchBackground: 'Picture1.jpg',   // picture behind the launch screen ('' = the 3D stage only)
       countdown: 10,   // seconds counted down (10 … 1) after pressing Launch
       event: 'SAB Students’ 5th Research Colloquium',
       publisherLong: 'SAB Campus · The Institute of Chartered Accountants of Sri Lanka',
@@ -969,28 +1022,24 @@
       pdfPages: {
         cover: 1,
         back: 126,
-        // title · 5 messages · contents · 10 panel pages (odd count: last one sits on the page block).
-        // Numbers are PDF pages; 'P1' … 'P10' are designed pages listing a panel and all its topics (CONFIG.panels).
-        sides: [2, 8, 9, 10, 11, 12, 13, 14, 15, 'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9', 'P10'],
+        // every page from the title page to the Message of the Colloquium Chair (odd count: last one sits on the page block).
+        // Numbers are PDF pages; 'P1' … 'P10' would add designed pages listing a panel and all its topics (CONFIG.panels).
+        sides: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
       },
       // Path/URL of your PDF. When served over http(s), its pages become the book's pages.
       // (Opening index.html directly from disk blocks this — drag & drop the PDF instead.)
       pdfUrl: 'book.pdf',
-      qrUrl: 'https://casrilanka-my.sharepoint.com/:b:/p/salinda_wickramasinghe_sab/IQAVcHsi7RNwRZloecl6FdktAYix-cIAgFEu1QoHqQ4kS28',  // what the QR code opens
+      qrUrl: 'https://online.fliphtml5.com/sab_src/Abstract-Book---SAB-SRC-2026---Final/',  // what the QR code opens (online flipbook)
       downloadUrl: '',                              // defaults to pdfUrl, then qrUrl
       // Captions shown above the book for each open spread
-      // (pages 2 · 8–9 · 10–11 · 12–13 · 14–15 · then the panel pages two at a time)
+      // (pages 2 · 3–4 · 5–6 · 7–8 · 9–10 · 11–12)
       spreads: [
         ['SAB SRC 2026', 'Book of <em>Abstracts</em>'],
-        ['Messages', 'The President & <em>Vice President</em>'],
-        ['Messages', 'The CEO & <em>Keynote Speaker</em>'],
-        ['Message & Contents', 'The <em>Colloquium Chair</em>'],
-        ['Table of Content', 'Ten Research <em>Panels</em>'],
-        ['Panels I – II', 'Financial Reporting · <em>Fraud & Forensic Accounting</em>'],
-        ['Panels III – IV', 'Ethics & Governance · <em>Audit, Assurance & Taxation</em>'],
-        ['Panels V – VI', 'Corporate Finance · <em>Sustainability & ESG</em>'],
-        ['Panels VII – VIII', 'Management Accounting · <em>Data Analytics & Digital</em>'],
-        ['Panels IX – X', 'Contemporary Issues · <em>Multidisciplinary Approaches</em>'],
+        ['Editorial Board', 'Reviewers & <em>Publishing</em>'],
+        ['Organizing Committee', 'The People Behind <em>SAB SRC 2026</em>'],
+        ['Committees & Messages', 'Message from the <em>President</em>'],
+        ['Messages', 'The Vice President & <em>CEO</em>'],
+        ['Messages', 'Keynote Speaker & <em>Colloquium Chair</em>'],
       ],
       pageHold: 1.8,   // seconds each open spread stays on screen
       // Panels and their research topics (from the Table of Content) — shown as one designed page per panel
@@ -1140,6 +1189,13 @@
     const finaleEl = $('finale'), headEl = $('finHead'), cardEl = $('qrCard'), panelEl = $('finPanel');
     $('introEyebrow').textContent = CONFIG.event || `Official Launch · ${CONFIG.launchDate}`;
     $('introKicker').textContent = `The official launch of the ${titleOneLine}`;
+    const introBg = $('introBg');
+    if (CONFIG.launchBackground) {
+      introBg.style.backgroundImage = `url("${CONFIG.launchBackground}")`;
+      document.body.classList.add('with-bg');
+      // the picture has no "Balance & Beyond" headline, so carry the theme in the launch line
+      if (CONFIG.headline) $('introKicker').textContent += ` · ${CONFIG.headline.join(' ')}`;
+    }
     if (CONFIG.headline) { $('hl1').textContent = CONFIG.headline[0]; $('hl2').textContent = CONFIG.headline[1]; }
     $('introTheme').textContent = CONFIG.theme || CONFIG.subtitle;
     $('metaDate').textContent = CONFIG.launchDate;
@@ -1150,8 +1206,6 @@
     const setLaunchLabel = (t) => { launchBtn.querySelector('.launch-label').textContent = t; };
     $('finTitle').innerHTML = `<em class="gold-text">${titleOneLine}</em>`;
     $('finAuthor').textContent = `${CONFIG.subtitle} · ${CONFIG.author}`;
-    $('qrUrl').textContent = CONFIG.qrUrl.replace(/^https?:\/\//, '');
-    $('dlBtn').href = CONFIG.downloadUrl || CONFIG.pdfUrl || CONFIG.qrUrl;
 
     function toast(msg, ms = 2600) {
       const t = $('toast'); t.textContent = msg; t.classList.add('on');
@@ -1197,10 +1251,8 @@
       flip(g = .35) { this.noise({ dur: .45, f0: 2600, f1: 700, q: .9, gain: g, attack: .06 }); },
       chime() { [1318.5, 1661.2, 1975.5, 2637].forEach((f, i) => this.tone(f, 1.8, .08, 'sine', i * .09)); },
     };
-    $('muteBtn').addEventListener('click', () => {
-      Sfx.setMuted(!Sfx.muted);
-      $('icoOn').style.display = Sfx.muted ? 'none' : ''; $('icoOff').style.display = Sfx.muted ? '' : 'none';
-    });
+    // no on-screen sound button: press M to mute / unmute
+    addEventListener('keydown', e => { if (e.code === 'KeyM') Sfx.setMuted(!Sfx.muted); });
 
     /* ==========================================================================
        Renderer / scene
@@ -1952,6 +2004,9 @@
       state.phase = 'running'; Sfx.init();
       const tl = master = gsap.timeline();
       tl.to(introEl, { autoAlpha: 0, y: -24, duration: .6, ease: 'power2.in' }, 0);
+      // the launch picture dissolves into the dark 3D stage; top bar returns to the top
+      tl.to(introBg, { autoAlpha: 0, scale: 1.04, duration: 1.4, ease: 'power2.inOut' }, 0);
+      tl.call(() => document.body.classList.remove('with-bg'), null, 1.4);
       // countdown: N … 1, one number per second, then ignition
       const N = Math.max(1, CONFIG.countdown || 3), STEP = 1, C0 = .6;
       const T = C0 + N * STEP;
@@ -2062,7 +2117,8 @@
     }
 
     launchBtn.addEventListener('click', launch);
-    $('replayBtn').addEventListener('click', () => { reset(); gsap.delayedCall(.2, launch); });
+    // no on-screen Replay button: press R at the finale to run the launch again (handy for rehearsals)
+    addEventListener('keydown', e => { if (e.code === 'KeyR' && state.phase === 'final') { reset(); gsap.delayedCall(.2, launch); } });
     addEventListener('keydown', e => {
       if ((e.code === 'Space' || e.code === 'Enter') && e.target !== launchBtn && state.phase === 'idle') { e.preventDefault(); launch(); }
     });
@@ -2221,7 +2277,6 @@
           applyPage(i, await render(n));
         }
         pdfLoaded = true; toast(`Loaded “${name || source}” · ${doc.numPages} pages`);
-        if (!CONFIG.downloadUrl && typeof source === 'string') $('dlBtn').href = source;
       } catch (err) {
         console.error(err); toast('Could not load the PDF — using the designed preview pages instead.');
       }
